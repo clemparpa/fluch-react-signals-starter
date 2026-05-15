@@ -48,15 +48,17 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S04 — Signals + Babel transform
+## S04 — Signals + Babel transform ✅
 **But** : signals auto-trackés sans wrapper manuel.
 
-- [ ] `pnpm add @preact/signals-react`
-- [ ] `pnpm add -D @preact/signals-react-transform`
-- [ ] Dans `vite.config.ts`, configurer `@vitejs/plugin-react` (Babel) avec le plugin transform en `mode: 'auto'` (cf. SPEC §3.1).
-- [ ] Créer `src/lib/signals.ts` avec `themeMode` + `effect` qui synchronise la classe `dark` sur `<html>`.
+- [x] `pnpm add @preact/signals-react` (v3.10.1).
+- [x] `pnpm add -D @preact/signals-react-transform` (v0.8.1).
+- [x] `pnpm add -D @rolldown/plugin-babel @babel/core @types/babel__core` (nécessaire car `@vitejs/plugin-react` v6 a viré l'option `babel` inline).
+- [x] `vite.config.ts` : `babel()` placé **avant** `react()`, plugin référencé avec préfixe `module:` (`'module:@preact/signals-react-transform'`) sinon Babel cherche `@preact/babel-plugin-signals-react-transform` (convention de nommage).
+- [x] `src/lib/signals.ts` : `themeMode` signal + `effect` qui synchronise la classe `dark` sur `<html>`.
+- [x] `src/App.tsx` : toggle dark/light en header pour valider le re-render automatique (sera migré vers le header de la showcase en S06).
 
-**Vérif** : un bouton `<button onClick={() => themeMode.value = themeMode.value === 'dark' ? 'light' : 'dark'}>{themeMode.value}</button>` re-rend tout seul sans `useSignals()` explicite.
+**Vérif** : confirmé en dev et en build prod. Le bundle minifié contient `useSignals(1)` + `try/finally` injectés dans `App()` — aucun import explicite de `useSignals` dans le source. Toggle visuel OK sur `http://localhost:5173`.
 
 ---
 

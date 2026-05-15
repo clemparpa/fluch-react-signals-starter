@@ -6,8 +6,8 @@ Template React prêt à l'emploi pour bootstraper un projet stylé via un agent 
 
 | Brique | Choix | Justification |
 |---|---|---|
-| Build | **Vite 5+** | Léger, HMR rapide, pas de SSR inutile |
-| Plugin React | **`@vitejs/plugin-react`** (Babel) | Nécessaire pour injecter le transform Signals — SWC n'exécute pas de plugin Babel |
+| Build | **Vite 8+** (Rolldown) | Léger, HMR rapide, pas de SSR inutile |
+| Plugin React | **`@vitejs/plugin-react`** + **`@rolldown/plugin-babel`** | Depuis `plugin-react` v6, l'option `babel` inline a disparu (passage à oxc). On exécute le transform Signals via un plugin Babel Rolldown séparé. SWC reste exclu (n'exécute pas de plugin Babel). |
 | Framework | **React 19** | Stable, compat Base UI et Signals via Babel transform |
 | Routing | **React Router 7 — data router SPA** (`createBrowserRouter`) | Framework mode incompatible avec le Babel transform de Signals (le plugin `reactRouter()` remplace `@vitejs/plugin-react` et n'expose pas d'option `babel`). Data router suffit pour un SPA pur. |
 | State | **`@preact/signals-react`** ≥ 2.3.0 + **`@preact/signals-react-transform`** | API minimale, pas de Provider, transform Babel auto. v3+ de signals-react a retiré l'auto-tracking via internals React 19 → le transform Babel est la seule voie auto. |
@@ -67,22 +67,22 @@ fluch-react-signals-starter/
 ### 3.1 `vite.config.ts`
 ```ts
 /// <reference types="vitest" />
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import path from 'node:path'
+import babel from '@rolldown/plugin-babel'
 
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [['@preact/signals-react-transform', { mode: 'auto' }]],
-      },
+    babel({
+      plugins: [['module:@preact/signals-react-transform', { mode: 'auto' }]],
     }),
+    react(),
     tailwindcss(),
   ],
   resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   test: {
     environment: 'happy-dom',
@@ -91,6 +91,12 @@ export default defineConfig({
   },
 })
 ```
+
+> **Points subtils** :
+>
+> - Le préfixe **`module:`** devant le plugin est obligatoire. Par convention Babel, sans préfixe, Babel chercherait `@preact/babel-plugin-signals-react-transform` (qui n'existe pas) et planterait au build.
+> - L'ordre compte : `babel()` **avant** `react()` pour que le transform Signals voie le JSX d'origine, pas une version déjà digérée.
+> - Peer deps requises : `@babel/core` (runtime) et `@types/babel__core` (types).
 
 ### 3.2 `src/styles/globals.css` (forme initiale — cible du skill apply-theme)
 
@@ -232,6 +238,7 @@ Hors scope de la spec template, mais on fige le contrat pour orienter la structu
 3. ~~`shadcn add --all`~~ : **résolu (S03)** → le flag existe et installe bien tous les composants Base UI. Attention : si la CLI ne résout pas l'alias `@/*` (cas où `tsconfig.json` racine n'a pas les `paths`), les fichiers sont créés dans `./@/` à la racine au lieu de `src/`. Solution : ajouter `paths` au `tsconfig.json` racine **avant** de lancer la CLI.
 4. **Pomp des `*-example.tsx`** : certains exemples peuvent référencer des assets/données mock (faker, images) qu'il faudra remplacer ou installer.
 5. **Patches manuels sur composants shadcn générés (S03)** : `calendar.tsx` (`table` → `month_grid` pour matcher react-day-picker v10) et `scroll-area.tsx` (suppression de l'import `React` inutile sous `noUnusedLocals`). À re-patcher si shadcn est régénéré.
+6. **`@vitejs/plugin-react` v6 a viré l'option `babel` inline (S04)** : transform Signals injecté via `@rolldown/plugin-babel` séparé, avec préfixe `module:` obligatoire devant le nom du plugin et ordre `babel()` avant `react()`. Si plugin-react expose à nouveau `babel` dans une version ultérieure, on pourra simplifier.
 
 ## 9. Ordre de mise en place
 
