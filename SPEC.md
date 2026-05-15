@@ -94,107 +94,20 @@ export default defineConfig({
 
 ### 3.2 `src/styles/globals.css` (forme initiale — cible du skill apply-theme)
 
-Tokens **en oklch** (format shadcn v4 actuel). `:root` pour light, `.dark` pour dark, et `@theme inline` qui expose ces vars à Tailwind v4.
+Suit la doc shadcn 4.7 "Manual Installation" pile (variant Base UI). Tokens **en oklch**, `:root` (light) + `.dark` (dark), `@theme inline` mappe les vars vers les utilities Tailwind v4. Inclut :
 
-```css
-@import 'tailwindcss';
+- `@import "tw-animate-css"` (animations Drawer/Dialog…)
+- `@import "shadcn/tailwind.css"` (keyframes `accordion-*`, custom-variants `data-open`/`data-closed`)
+- `@custom-variant dark (&:is(.dark *))` : critique — sans ça, Tailwind v4 utilise `prefers-color-scheme` au lieu de la classe `.dark`.
+- Tokens charts (`--chart-1…5`) et sidebar (`--sidebar-*`)
+- Échelle radius `sm/md/lg/xl/2xl/3xl/4xl` calculée à partir de `--radius`
+- `@layer base { * { border-border outline-ring/50 } body { bg-background text-foreground } }`
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.556 0 0);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-}
-```
+Seules **personnalisations** par rapport à la doc shadcn : `--font-sans: Inter` et `--font-mono: JetBrains Mono` (au lieu des defaults Tailwind / Geist). Le contenu exact est dans [src/styles/globals.css](src/styles/globals.css) — toute évolution doit y être faite, pas dans la spec.
 
 ### 3.3 `components.json`
-```json
-{
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "",
-    "css": "src/styles/globals.css",
-    "baseColor": "neutral",
-    "cssVariables": true
-  },
-  "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui"
-  }
-}
-```
 
-> Le flag/clé exacte pour sélectionner le variant Base UI sera confirmée à l'exécution via `pnpm dlx shadcn@latest init --help` puis figée ici. La doc shadcn évolue, on prend la sortie de la CLI comme source de vérité.
+Généré par `pnpm dlx shadcn@latest init` avec sélection du variant Base UI au prompt. Champ clé : `"style": "base-nova"` (nom officiel du variant Base UI dans shadcn 4.7 ; le variant Radix par défaut est `"radix-nova"`). Voir [components.json](components.json) pour la version courante.
 
 ### 3.4 `src/lib/signals.ts`
 
@@ -314,10 +227,11 @@ Hors scope de la spec template, mais on fige le contrat pour orienter la structu
 
 ## 8. Risques et points à valider en cours d'exécution
 
-1. **shadcn CLI — flag pour variant Base UI** : la clé exacte (`--base base` ? `--style base` ? autre ?) sera confirmée via `--help` au moment du run et figée dans `components.json` après coup.
-2. **React 19 + Base UI + Signals transform** : combinaison à valider sur un `Dialog` + `Combobox` (composants les plus sensibles aux subtilités de rendu).
-3. **`shadcn add --all`** : confirmer que le flag existe encore et qu'il installe bien la variante Base UI sélectionnée à l'init.
+1. ~~shadcn CLI — flag pour variant Base UI~~ : **résolu (S03)** → `"style": "base-nova"` dans `components.json`, sélectionné via le prompt interactif de `pnpm dlx shadcn@latest init`.
+2. **React 19 + Base UI + Signals transform** : combinaison à valider sur un `Dialog` + `Combobox` (composants les plus sensibles aux subtilités de rendu) — vérification renvoyée à S06.
+3. ~~`shadcn add --all`~~ : **résolu (S03)** → le flag existe et installe bien tous les composants Base UI. Attention : si la CLI ne résout pas l'alias `@/*` (cas où `tsconfig.json` racine n'a pas les `paths`), les fichiers sont créés dans `./@/` à la racine au lieu de `src/`. Solution : ajouter `paths` au `tsconfig.json` racine **avant** de lancer la CLI.
 4. **Pomp des `*-example.tsx`** : certains exemples peuvent référencer des assets/données mock (faker, images) qu'il faudra remplacer ou installer.
+5. **Patches manuels sur composants shadcn générés (S03)** : `calendar.tsx` (`table` → `month_grid` pour matcher react-day-picker v10) et `scroll-area.tsx` (suppression de l'import `React` inutile sous `noUnusedLocals`). À re-patcher si shadcn est régénéré.
 
 ## 9. Ordre de mise en place
 

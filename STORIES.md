@@ -4,40 +4,47 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S01 — Bootstrap Vite + TypeScript + pnpm
+## S01 — Bootstrap Vite + TypeScript + pnpm ✅
 **But** : avoir un projet Vite/React/TS qui démarre avec `pnpm dev`.
 
-- [ ] `pnpm create vite . --template react-ts` (dans un dossier vide ; déplacer le contenu si besoin pour ne pas écraser `SPEC.md` / `STORIES.md` / `LICENSE` / `README.md`).
-- [ ] Switch package manager → pnpm (créer `pnpm-lock.yaml`, supprimer tout `package-lock.json`).
-- [ ] Ajouter `engines` (`node >= 22`, `pnpm >= 9`) et `packageManager` dans `package.json`.
-- [ ] Créer `.nvmrc` avec `22`.
-- [ ] Étendre `tsconfig.json` : `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch`.
-- [ ] Alias `@` → `src/` dans `tsconfig.json` et plus tard `vite.config.ts`.
+- [x] `pnpm create vite . --template react-ts` (dans un dossier vide ; déplacer le contenu si besoin pour ne pas écraser `SPEC.md` / `STORIES.md` / `LICENSE` / `README.md`).
+- [x] Switch package manager → pnpm (créer `pnpm-lock.yaml`, supprimer tout `package-lock.json`).
+- [x] Ajouter `engines` (`node >= 22`, `pnpm >= 9`) et `packageManager` dans `package.json`.
+- [x] Créer `.nvmrc` avec `22`.
+- [x] Étendre `tsconfig.json` : `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch`.
+- [x] Alias `@` → `src/` dans `tsconfig.json` et plus tard `vite.config.ts`.
 
 **Vérif** : `pnpm dev` lance le serveur, page Vite par défaut s'affiche.
 
 ---
 
-## S02 — Tailwind v4 + globals.css initial
+## S02 — Tailwind v4 + globals.css initial ✅
 **But** : Tailwind v4 opérationnel avec tous les tokens shadcn en oklch.
 
-- [ ] `pnpm add -D tailwindcss @tailwindcss/vite`
-- [ ] Ajouter `tailwindcss()` au `vite.config.ts`.
-- [ ] Créer `src/styles/globals.css` (cf. SPEC §3.2) : `@import 'tailwindcss'`, `:root` (light) + `.dark` (dark) en **oklch**, puis `@theme inline` qui mappe les vars vers les utilities Tailwind.
-- [ ] Importer `globals.css` dans `main.tsx`.
+- [x] `pnpm add -D tailwindcss @tailwindcss/vite`
+- [x] Ajouter `tailwindcss()` au `vite.config.ts`.
+- [x] Créer `src/styles/globals.css` (cf. SPEC §3.2).
+- [x] Importer `globals.css` dans `main.tsx`.
+
+> Note : la forme initiale posée en S02 a été enrichie en S03 pour matcher la doc shadcn 4.7 (tw-animate-css, shadcn/tailwind.css, custom-variant dark, tokens chart + sidebar, @layer base, échelle radius xl→4xl).
 
 **Vérif** : un `<div className="bg-background text-foreground p-4">` rend les bonnes couleurs ; toggler manuellement la classe `dark` sur `<html>` change le rendu.
 
 ---
 
-## S03 — shadcn init (variant Base UI) + composants
+## S03 — shadcn init (variant Base UI) + composants ✅
 **But** : registry shadcn configurée, tous les composants installés.
 
-- [ ] `pnpm dlx shadcn@latest init --help` pour confirmer le flag du variant Base UI ; lancer l'init en sélectionnant Base UI.
-- [ ] Vérifier que `components.json` reflète bien Base UI + Tailwind v4.
-- [ ] `pnpm dlx shadcn@latest add --all` (ou bouclage sur la liste des composants si `--all` indisponible).
+- [x] `pnpm dlx shadcn@latest init` (variant Base UI sélectionné au prompt → `"style": "base-nova"` dans `components.json`).
+- [x] `pnpm dlx shadcn@latest add --all` → 55 composants dans `src/components/ui/`, hook `use-mobile` dans `src/hooks/`.
+- [x] `src/lib/utils.ts` créé manuellement avec `cn()` (la CLI a un bug qui ne l'a pas créé).
+- [x] `tsconfig.json` racine : ajout des `paths` (`@/*` → `./src/*`) pour que shadcn résolve l'alias.
+- [x] `pnpm-workspace.yaml` : `msw: false` (bloque le warning ERR_PNPM_IGNORED_BUILDS).
+- [x] `shadcn` déplacé en devDep.
+- [x] Refonte de `globals.css` pour matcher la doc shadcn 4.7 (cf. note S02).
+- [x] Patches manuels : `calendar.tsx` (`table` → `month_grid`) et `scroll-area.tsx` (import React inutile).
 
-**Vérif** : `src/components/ui/` rempli, `src/lib/utils.ts` créé avec `cn()`.
+**Vérif** : `src/components/ui/` rempli (55 composants), `src/lib/utils.ts` créé avec `cn()`, `pnpm typecheck` + `pnpm build` passent.
 
 ---
 
