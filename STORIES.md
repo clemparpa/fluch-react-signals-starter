@@ -62,15 +62,16 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S05 — React Router 7 (data router SPA)
+## S05 — React Router 7 (data router SPA) ✅
 **But** : routing `/` et `/showcase`.
 
-- [ ] `pnpm add react-router` (v7).
-- [ ] Créer `src/router.tsx` avec `createBrowserRouter([{ path: '/', ... }, { path: '/showcase', ... }])`.
-- [ ] `src/App.tsx` rend `<RouterProvider router={router} />`.
-- [ ] Créer placeholders `src/pages/home.tsx` et `src/pages/showcase.tsx`.
+- [x] `pnpm add react-router` (v7.15.0). En v7, plus de `react-router-dom` — tout est exporté depuis `react-router`.
+- [x] Créer `src/router.tsx` : route parent `path: '/'` avec `element: <RootLayout />` + `children` (`index: true` → Home, `path: 'showcase'` → Showcase). Imports via alias `@/`.
+- [x] `src/App.tsx` réduit à `<RouterProvider router={router} />`.
+- [x] Créer `src/layouts/root.tsx` : header partagé (titre + NavLink Home/Showcase + toggle dark/light) + `<Outlet />`. Le toggle migre de `App.tsx` vers le layout pour rester visible sur les deux pages.
+- [x] Créer `src/pages/home.tsx` (titre + section "Tokens sanity check" reprise de l'ancien App.tsx) et `src/pages/showcase.tsx` (placeholder, sera rempli en S06).
 
-**Vérif** : navigation entre `/` et `/showcase` fonctionne sans reload.
+**Vérif** : `pnpm typecheck` + `pnpm build` OK, dev server confirme la nav `/` ↔ `/showcase` sans reload, toggle dark/light testé en navigateur (validé par le user). Inspection du module transformé `/src/layouts/root.tsx` : `_useSignals(1)` + `_effect.f()` bien injectés par le Babel transform sur `RootLayout`.
 
 ---
 
