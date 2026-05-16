@@ -75,16 +75,18 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S06 — Page Showcase (pompée des exemples shadcn)
+## S06 — Page Showcase (pompée des exemples shadcn) ✅
+
 **But** : `/showcase` exhaustive, alignée sur les tokens.
 
-- [ ] Pour chaque section listée dans SPEC §5 :
-  - Récupérer le `*-example.tsx` correspondant via `pnpm dlx shadcn@latest docs <component>` ou fetch du raw GitHub (`apps/v4/registry/bases/base/examples/`).
-  - Coller dans une sous-section de `showcase.tsx`, adapter les imports et remplacer les éventuelles données mock.
-- [ ] Header : titre "Showcase" + bouton dark/light qui flip `themeMode`.
-- [ ] Section Palette : itérer sur la liste des tokens et lire leurs valeurs calculées via `getComputedStyle(document.documentElement).getPropertyValue('--background')` côté client.
+- [x] Bascule en cours d'exécution : les `*-example.tsx` du registry sont **inutilisables tels quels** (scaffolding interne `Example`/`ExampleWrapper` + `IconPlaceholder` multi-bibliothèques + 600-1000 lignes/fichier). Décision (via AskUserQuestion) : écrire à la main, 3-5 variants/section, en restant strictement aligné sur SPEC §5 (« pompe **ou adapte** »).
+- [x] Structure : `src/pages/showcase/index.tsx` + `sections/{palette,typography,spacing-radius,buttons,form,cards,overlays,navigation,feedback,data-display}.tsx` (10 fichiers).
+- [x] Header showcase : juste un `<h1>` + sous-titre. Le toggle dark/light reste dans le `RootLayout` (header global) — pas de duplication.
+- [x] Section Palette : itère sur les 11 tokens, swatch via `style={{ background: 'var(--token)' }}` (résolu par le navigateur au paint), valeur oklch lue via `getComputedStyle` dans un `useLayoutEffect` redéclenché par `themeMode.value`. La palette reflète donc en live l'état courant de `globals.css` — exactement ce que le futur skill `apply-theme` aura besoin pour valider une modif.
+- [x] `<Toaster />` mounté dans `RootLayout` avec `theme={themeMode.value}` (override du `useTheme` next-themes interne de `sonner.tsx`).
+- [x] Adaptations API rencontrées : `<Drawer>` (vaul) utilise `asChild`, pas `render` ; `<Accordion>` (base-ui) n'a pas `type`/`collapsible` (utilise `openMultiple` à la place).
 
-**Vérif** : `/showcase` s'affiche, toggle dark/light change les couleurs en live, chaque token est visible au moins une fois.
+**Vérif** : `pnpm typecheck` ✅, `pnpm build` ✅ (764 KB JS / 236 KB gzip, warning chunk-size attendu pour un template avec 55 composants). Toggle testé par le user en navigateur — palette se met à jour en live.
 
 ---
 

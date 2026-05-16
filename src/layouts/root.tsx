@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router'
+import { Toaster } from '@/components/ui/sonner'
 import { themeMode } from '@/lib/signals'
 
 function RootLayout() {
@@ -50,6 +51,7 @@ function RootLayout() {
       <main className="mx-auto max-w-5xl p-8">
         <Outlet />
       </main>
+      <Toaster theme={themeMode.value} />
     </div>
   )
 }
