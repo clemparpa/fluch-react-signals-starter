@@ -1,8 +1,8 @@
-import { ArrowRightIcon, PlusIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ArrowRightIcon, PlusIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-const VARIANTS = ['default', 'secondary', 'outline', 'ghost', 'destructive', 'link'] as const
-const SIZES = ['sm', 'default', 'lg'] as const
+const VARIANTS = ["default", "secondary", "outline", "ghost", "destructive", "link"] as const
+const SIZES = ["sm", "default", "lg"] as const
 
 function Buttons() {
   return (

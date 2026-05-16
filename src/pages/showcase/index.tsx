@@ -1,14 +1,14 @@
-import { Separator } from '@/components/ui/separator'
-import Buttons from './sections/buttons'
-import Cards from './sections/cards'
-import DataDisplay from './sections/data-display'
-import Feedback from './sections/feedback'
-import Form from './sections/form'
-import Navigation from './sections/navigation'
-import Overlays from './sections/overlays'
-import Palette from './sections/palette'
-import SpacingRadius from './sections/spacing-radius'
-import Typography from './sections/typography'
+import { Separator } from "@/components/ui/separator"
+import Buttons from "./sections/buttons"
+import Cards from "./sections/cards"
+import DataDisplay from "./sections/data-display"
+import Feedback from "./sections/feedback"
+import Form from "./sections/form"
+import Navigation from "./sections/navigation"
+import Overlays from "./sections/overlays"
+import Palette from "./sections/palette"
+import SpacingRadius from "./sections/spacing-radius"
+import Typography from "./sections/typography"
 
 function Showcase() {
   return (

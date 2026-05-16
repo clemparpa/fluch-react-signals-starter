@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Combobox,
   ComboboxContent,
@@ -5,12 +6,11 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+} from "@/components/ui/combobox"
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -18,12 +18,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Slider } from '@/components/ui/slider'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 
-const frameworks = ['Next.js', 'Remix', 'SvelteKit', 'Nuxt', 'Astro'] as const
+const frameworks = ["Next.js", "Remix", "SvelteKit", "Nuxt", "Astro"] as const
 
 function Form() {
   return (
@@ -44,12 +44,7 @@ function Form() {
           </Field>
           <Field>
             <FieldLabel htmlFor="form-email-invalid">Email (invalid)</FieldLabel>
-            <Input
-              id="form-email-invalid"
-              type="email"
-              defaultValue="not-an-email"
-              aria-invalid
-            />
+            <Input id="form-email-invalid" type="email" defaultValue="not-an-email" aria-invalid />
           </Field>
           <Field>
             <FieldLabel htmlFor="form-disabled">Disabled</FieldLabel>

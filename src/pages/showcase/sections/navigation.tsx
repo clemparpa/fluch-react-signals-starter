@@ -1,5 +1,10 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,15 +15,17 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from "@/components/ui/dropdown-menu"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 function Navigation() {
   return (
     <section className="space-y-4">
       <div className="space-y-1">
         <h2 className="text-xl font-medium">Navigation</h2>
-        <p className="text-sm text-muted-foreground">Tabs, Accordion, Dropdown menu avec sous-menu.</p>
+        <p className="text-sm text-muted-foreground">
+          Tabs, Accordion, Dropdown menu avec sous-menu.
+        </p>
       </div>
 
       <Tabs defaultValue="overview" className="w-full max-w-md">
@@ -55,8 +62,8 @@ function Navigation() {
         <AccordionItem value="c">
           <AccordionTrigger>Where do I add a route?</AccordionTrigger>
           <AccordionContent>
-            Dans <code className="font-mono text-xs">src/router.tsx</code>, ajoute un children
-            sous la route parent.
+            Dans <code className="font-mono text-xs">src/router.tsx</code>, ajoute un children sous
+            la route parent.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

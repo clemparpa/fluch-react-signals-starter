@@ -1,18 +1,18 @@
-import { useLayoutEffect, useState } from 'react'
-import { themeMode } from '@/lib/signals'
+import { useLayoutEffect, useState } from "react"
+import { themeMode } from "@/lib/signals"
 
 const TOKENS = [
-  'background',
-  'foreground',
-  'primary',
-  'secondary',
-  'accent',
-  'muted',
-  'destructive',
-  'border',
-  'ring',
-  'card',
-  'popover',
+  "background",
+  "foreground",
+  "primary",
+  "secondary",
+  "accent",
+  "muted",
+  "destructive",
+  "border",
+  "ring",
+  "card",
+  "popover",
 ] as const
 
 type Token = (typeof TOKENS)[number]
@@ -20,15 +20,17 @@ type Token = (typeof TOKENS)[number]
 function Palette() {
   const mode = themeMode.value
   const [values, setValues] = useState<Record<Token, string>>(
-    () => Object.fromEntries(TOKENS.map((t) => [t, ''])) as Record<Token, string>,
+    () => Object.fromEntries(TOKENS.map((t) => [t, ""])) as Record<Token, string>,
   )
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mode is the trigger for re-reading CSS vars on theme toggle
   useLayoutEffect(() => {
     const style = getComputedStyle(document.documentElement)
     setValues(
-      Object.fromEntries(
-        TOKENS.map((t) => [t, style.getPropertyValue(`--${t}`).trim()]),
-      ) as Record<Token, string>,
+      Object.fromEntries(TOKENS.map((t) => [t, style.getPropertyValue(`--${t}`).trim()])) as Record<
+        Token,
+        string
+      >,
     )
   }, [mode])
 
@@ -54,7 +56,7 @@ function Palette() {
             <div className="min-w-0 space-y-0.5">
               <div className="text-sm font-medium">{token}</div>
               <div className="truncate font-mono text-xs text-muted-foreground">
-                {values[token] || '—'}
+                {values[token] || "—"}
               </div>
             </div>
           </div>

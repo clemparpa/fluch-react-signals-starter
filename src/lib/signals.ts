@@ -1,9 +1,9 @@
-import { effect, signal } from '@preact/signals-react'
+import { effect, signal } from "@preact/signals-react"
 
-export const themeMode = signal<'light' | 'dark'>('light')
+export const themeMode = signal<"light" | "dark">("light")
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   effect(() => {
-    document.documentElement.classList.toggle('dark', themeMode.value === 'dark')
+    document.documentElement.classList.toggle("dark", themeMode.value === "dark")
   })
 }

@@ -1,9 +1,9 @@
 const RADII = [
-  { label: 'sm', className: 'rounded-sm' },
-  { label: 'md', className: 'rounded-md' },
-  { label: 'lg', className: 'rounded-lg' },
-  { label: 'xl', className: 'rounded-xl' },
-  { label: '2xl', className: 'rounded-2xl' },
+  { label: "sm", className: "rounded-sm" },
+  { label: "md", className: "rounded-md" },
+  { label: "lg", className: "rounded-lg" },
+  { label: "xl", className: "rounded-xl" },
+  { label: "2xl", className: "rounded-2xl" },
 ] as const
 
 function SpacingRadius() {
@@ -12,8 +12,8 @@ function SpacingRadius() {
       <div className="space-y-1">
         <h2 className="text-xl font-medium">Spacing & Radius</h2>
         <p className="text-sm text-muted-foreground">
-          Échelle <code className="font-mono text-xs">--radius-*</code> dérivée de{' '}
-          <code className="font-mono text-xs">--radius</code> dans{' '}
+          Échelle <code className="font-mono text-xs">--radius-*</code> dérivée de{" "}
+          <code className="font-mono text-xs">--radius</code> dans{" "}
           <code className="font-mono text-xs">globals.css</code>.
         </p>
       </div>

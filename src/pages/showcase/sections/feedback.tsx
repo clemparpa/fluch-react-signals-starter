@@ -1,9 +1,9 @@
-import { CircleAlertIcon, InfoIcon, RocketIcon, TriangleAlertIcon } from 'lucide-react'
-import { toast } from 'sonner'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
+import { CircleAlertIcon, InfoIcon, RocketIcon, TriangleAlertIcon } from "lucide-react"
+import { toast } from "sonner"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 
 function Feedback() {
   return (
@@ -41,18 +41,20 @@ function Feedback() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="outline" onClick={() => toast('Event has been created')}>
+        <Button variant="outline" onClick={() => toast("Event has been created")}>
           Toast (default)
         </Button>
         <Button
           variant="outline"
-          onClick={() => toast.success('Saved successfully', { description: 'Your changes are live.' })}
+          onClick={() =>
+            toast.success("Saved successfully", { description: "Your changes are live." })
+          }
         >
           Toast (success)
         </Button>
         <Button
           variant="outline"
-          onClick={() => toast.error('Something went wrong', { description: 'Please retry.' })}
+          onClick={() => toast.error("Something went wrong", { description: "Please retry." })}
         >
           Toast (error)
         </Button>

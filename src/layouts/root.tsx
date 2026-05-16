@@ -1,6 +1,6 @@
-import { Link, NavLink, Outlet } from 'react-router'
-import { Toaster } from '@/components/ui/sonner'
-import { themeMode } from '@/lib/signals'
+import { Link, NavLink, Outlet } from "react-router"
+import { Toaster } from "@/components/ui/sonner"
+import { themeMode } from "@/lib/signals"
 
 function RootLayout() {
   return (
@@ -17,8 +17,8 @@ function RootLayout() {
               className={({ isActive }) =>
                 `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 }`
               }
             >
@@ -29,8 +29,8 @@ function RootLayout() {
               className={({ isActive }) =>
                 `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 }`
               }
             >
@@ -39,7 +39,7 @@ function RootLayout() {
             <button
               type="button"
               onClick={() => {
-                themeMode.value = themeMode.value === 'dark' ? 'light' : 'dark'
+                themeMode.value = themeMode.value === "dark" ? "light" : "dark"
               }}
               className="ml-2 rounded-md border border-border bg-card text-card-foreground px-3 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
             >

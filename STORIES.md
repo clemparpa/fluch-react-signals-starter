@@ -90,14 +90,17 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S07 — Biome (lint + format)
+## S07 — Biome (lint + format) ✅
 **But** : un seul outil pour lint et format.
 
-- [ ] `pnpm add -D --save-exact @biomejs/biome`
-- [ ] `pnpm exec biome init` → `biome.json` avec recommended rules.
-- [ ] Scripts `package.json` : `lint` (`biome ci`), `format` (`biome format --write .`), `check` (`biome check --write .`).
+- [x] `pnpm add -D --save-exact @biomejs/biome` (v2.4.15).
+- [x] `pnpm exec biome init` → écrasé ensuite par `biome.json` cible : `indentStyle: space / indentWidth: 2 / lineWidth: 100`, `quoteStyle: double` + `semicolons: asNeeded` (aligne sur le style shadcn existant), `assist.organizeImports: on`, `css.parser.tailwindDirectives: true` (pour `@theme inline` / `@custom-variant` / `@apply` de globals.css), `vcs.useIgnoreFile: true`.
+- [x] Scripts `package.json` : `lint` (`biome ci`), `format` (`biome format --write .`), `check` (`biome check --write .`).
+- [x] Override ciblé `src/components/ui/**` : désactive 11 règles bruyantes sur le code shadcn généré (a11y/useSemanticElements, useFocusableInteractive, useKeyWithClickEvents, noLabelWithoutControl, useAriaPropsForRole, noRedundantRoles ; correctness/useExhaustiveDependencies ; suspicious/noArrayIndexKey, noDoubleEquals, noDocumentCookie ; security/noDangerouslySetInnerHtml). Formatter reste actif partout.
+- [x] Fix code custom (3 cas) : `main.tsx` (biome-ignore noNonNullAssertion sur `document.getElementById("root")!` — pattern Vite), `palette.tsx` (biome-ignore useExhaustiveDependencies — `mode` est le trigger volontaire), `typography.tsx` (`href="https://example.com"` au lieu de `href="#"` pour `useValidAnchor`).
+- [x] `biome check --write .` a reformaté 72 fichiers — passage en double quotes sur le code custom, organize imports partout.
 
-**Vérif** : `pnpm lint` passe sur le code généré (corriger les warnings shadcn éventuels, ou les whitelister).
+**Vérif** : `pnpm lint` (= `biome ci`) passe clean (83 fichiers, 0 erreur, 0 warning) ; `pnpm typecheck` ✅ ; `pnpm build` ✅ (764 KB JS, identique à S06 — aucun impact bundle).
 
 ---
 
