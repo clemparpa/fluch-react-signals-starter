@@ -15,7 +15,11 @@
     "typecheck": "tsc -b --noEmit",
     "lint": "biome ci",
     "format": "biome format --write .",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "prepare": "node scripts/prepare.js"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -51,6 +55,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
     "shadcn": "^4.7.0",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",

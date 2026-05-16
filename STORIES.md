@@ -104,16 +104,21 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S08 — Husky + lint-staged
-**But** : pre-commit propre.
+## S08 — Husky + lint-staged ✅
+**But** : pre-commit propre, compatible aussi quand le template est utilisé en sous-dossier d'un monorepo.
 
-- [ ] `pnpm add -D husky lint-staged`
-- [ ] `pnpm exec husky init` → crée `.husky/pre-commit`.
-- [ ] Remplir `.husky/pre-commit` : `pnpm exec lint-staged` + `pnpm typecheck`.
-- [ ] Ajouter la clé `lint-staged` dans `package.json` : `biome check --write` sur `*.{ts,tsx,js,jsx,json,css}`.
-- [ ] Ajouter script `prepare: husky` dans `package.json`.
+- [x] `pnpm add -D husky lint-staged` (v9.1.7 + v17.0.4).
+- [x] `pnpm exec husky init` → crée `.husky/pre-commit` (sample remplacé) + `.husky/_/` (stubs internes ignorés via `.husky/_/.gitignore = *`, auto-généré). Le seul fichier `.husky/` tracké est `pre-commit`.
+- [x] `.husky/pre-commit` : `pnpm exec lint-staged` + `pnpm typecheck` (séquentiel, fail-fast).
+- [x] Clé `lint-staged` dans `package.json` : `"*.{ts,tsx,js,jsx,json,css}": "biome check --write --no-errors-on-unmatched"`. Le flag `--no-errors-on-unmatched` évite que biome exit non-zero si lint-staged lui passe un fichier hors de son scope.
+- [x] **Tactique monorepo** : au lieu de `"prepare": "husky"` (qui pollue le repo parent en monorepo), on pose `"prepare": "node scripts/prepare.js"`. Le script (~10 lignes) check `existsSync('.git')` à la racine du package : si oui → exec husky (standalone), sinon → exit-0 silencieux (monorepo ou clone sans .git). Pattern Vercel/Stackblitz, cross-platform.
 
-**Vérif** : un commit qui contient un fichier mal formaté est reformaté + le commit passe ; un fichier avec erreur de types fait échouer le commit.
+**Vérif** : testé bout-en-bout via `bash .husky/pre-commit` après stage d'un fichier jetable :
+- Single quotes → reformaté en double quotes par lint-staged, re-stagé auto, typecheck pass ✅
+- Type error volontaire (`const x: number = "..."`) → typecheck fail (TS2322), exit 2 ✅
+- Skip monorepo confirmé : `node scripts/prepare.js` depuis `/tmp/test-no-git/` log le skip et exit 0 ✅
+
+**Piège rencontré** : ne JAMAIS lancer `pnpm exec husky --version` — husky 9 CLI traite `--version` comme un argument de path (pas un flag) et configure `core.hooksPath` à `--version/_`, ce qui casse les hooks (post-checkout fait planter `git restore`). Récup : relancer `pnpm exec husky` (sans args) restaure `core.hooksPath = .husky/_`.
 
 ---
 
