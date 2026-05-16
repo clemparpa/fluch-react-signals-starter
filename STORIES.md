@@ -122,16 +122,24 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S09 — Vitest + @testing-library + test d'exemple
+## S09 — Vitest + @testing-library + test d'exemple ✅
 **But** : harness de test prêt à l'emploi, avec un test qui passe.
 
-- [ ] `pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/jest-dom`
-- [ ] Étendre `vite.config.ts` avec la clé `test` (cf. SPEC §3.1) ; ajouter la triple-slash `/// <reference types="vitest" />` si TS râle.
-- [ ] Créer `src/test/setup.ts` : `import '@testing-library/jest-dom'` + `afterEach(cleanup)`.
-- [ ] Écrire `src/test/showcase.test.tsx` : rendu de la page Showcase via `<MemoryRouter>` (ou data router en mémoire), assertion que le titre "Showcase" est présent, et que cliquer sur le toggle flip la classe `dark` sur `<html>`.
-- [ ] Script `package.json` : `test` (`vitest run`), `test:watch` (`vitest`), `test:ui` (`vitest --ui`).
+- [x] `pnpm add -D vitest @vitest/ui happy-dom @testing-library/react @testing-library/jest-dom @testing-library/user-event` (versions installées : vitest 4.1.6, @vitest/ui 4.1.6, happy-dom 20.9.0, @testing-library/react 16.3.2, @testing-library/jest-dom 6.9.1, @testing-library/user-event 14.6.1)
+- [x] Étendre `vite.config.ts` avec la clé `test` (cf. SPEC §3.1) ; triple-slash **`/// <reference types="vitest/config" />`** (pas `"vitest"` seul — Vitest 4.x élargit `UserConfig` via le sous-chemin `/config`).
+- [x] Créer `src/test/setup.ts` : `import "@testing-library/jest-dom/vitest"` + `afterEach(cleanup)` + reset du signal `themeMode` (state module-level qui leakerait entre `it()`).
+- [x] Écrire `src/test/showcase.test.tsx` : rendu via `createMemoryRouter(routes, { initialEntries: ["/showcase"] })` (routes importées de `src/router.tsx`, extraites en export nommé). Deux tests : titre "Showcase" présent + toggle theme flip la classe `dark` sur `<html>` (assertion bidirectionnelle light→dark→light).
+- [x] Scripts `package.json` : `test` (`vitest run`), `test:watch` (`vitest`), `test:ui` (`vitest --ui`).
 
-**Vérif** : `pnpm test` passe.
+**Vérif** : `pnpm test` passe (2 tests verts), `pnpm typecheck` / `pnpm lint` / `pnpm build` aussi.
+
+**Notes finales** :
+- **Refactor mineur de `src/router.tsx`** : extraction du tableau `routes: RouteObject[]` en export nommé pour permettre au test de construire un `createMemoryRouter` sur la même arborescence sans duplication. `createBrowserRouter(routes)` reste l'export pour la prod.
+- **Triple-slash** : `/// <reference types="vitest/config" />` (pas `vitest` tout court). Sans le sous-chemin `/config`, TS ne sait pas que la clé `test` existe sur `UserConfig` et `tsc` plante avec TS2769.
+- **`@testing-library/jest-dom/vitest`** (pas `/auto` ni racine) : l'entry officielle Vitest qui étend `expect` + types matchers.
+- **Reset signal** : `themeMode` est un signal singleton du module `src/lib/signals.ts`. L'`afterEach` global remet à `"light"` — sans ça, le 2e `it()` démarrerait en `dark`.
+- **Babel transform** : Vitest réutilise la config Vite donc `@preact/signals-react-transform` tourne aussi en test. `themeMode.value` dans le JSX du toggle reste réactif comme en prod.
+- **`vitest run` vs `vitest`** : `run` = single-pass pour CI ; `vitest` (watch) pour dev itératif.
 
 ---
 

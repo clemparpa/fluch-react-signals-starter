@@ -1,9 +1,9 @@
-import { createBrowserRouter } from "react-router"
+import { createBrowserRouter, type RouteObject } from "react-router"
 import RootLayout from "@/layouts/root"
 import Home from "@/pages/home"
 import Showcase from "@/pages/showcase"
 
-export const router = createBrowserRouter([
+export const routes: RouteObject[] = [
   {
     path: "/",
     element: <RootLayout />,
@@ -12,4 +12,6 @@ export const router = createBrowserRouter([
       { path: "showcase", element: <Showcase /> },
     ],
   },
-])
+]
+
+export const router = createBrowserRouter(routes)
