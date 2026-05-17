@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest a new capability for the template
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing an enhancement. Please describe the motivation first — what problem are we solving — before the solution.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched existing issues and discussions, and this idea has not already been raised.
+          required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / problem
+      description: What problem are you trying to solve? What's the use case?
+      placeholder: When forking this template I find myself having to …
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? What would the API / config / file look like?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you consider? Why is the proposed one preferable?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links to similar features in other templates, related issues, mockups, anything else useful.
+    validations:
+      required: false

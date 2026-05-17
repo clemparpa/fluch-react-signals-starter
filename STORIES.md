@@ -207,6 +207,95 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
+## S13 — OSS community files (bonus, hors SPEC initiale)
+**But** : doter le repo des fichiers de gouvernance attendus par les contributeurs OSS, pour faire passer le score "Community Standards" de GitHub à 100 %.
+
+- [x] `CONTRIBUTING.md` (racine) : workflow PR (fork → branch → PR vers `main`), commande unique de validation locale (`pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build` — 5 jobs comme CI), convention de commit (style `SXX — ...` pour stories de setup, conventional commits `feat:` / `fix:` / `chore:` / `docs:` / `refactor:` / `test:` pour évolutions post-livraison), section "Adding a story" pointant vers SPEC.md / STORIES.md, section reporting bugs/features pointant vers ISSUE_TEMPLATE/ + SECURITY.md.
+- [x] `CODE_OF_CONDUCT.md` (racine) : **Contributor Covenant 3.0** (et non 2.1 — la v3 est sortie entre temps, copiée intégralement depuis le site officiel). Contact = `@clemparpa` sur GitHub. Aucun email exposé.
+- [x] `SECURITY.md` (racine) : reporting via GitHub Private Vulnerability Reporting (lien direct vers `/security/advisories/new`), politique de support = seul `main` (HEAD), SLA acknowledgement < 7 jours, out-of-scope explicite (vulns de deps → upstream, `pnpm audit` couvre le high-severity).
+- [x] `.github/ISSUE_TEMPLATE/bug_report.yml` : format YAML moderne, `labels: ["bug"]`, `title: "[Bug] "`, champs structurés (description, steps, expected, actual, Node version, pnpm version, OS dropdown, additional context), checkbox "I have searched existing issues".
+- [x] `.github/ISSUE_TEMPLATE/feature_request.yml` : `labels: ["enhancement"]`, `title: "[Feature] "`, champs motivation/solution/alternatives/context, même checkbox de pré-recherche.
+- [x] `.github/ISSUE_TEMPLATE/config.yml` : `blank_issues_enabled: false` + `contact_links` vers Discussions (404 attendue tant que S14 n'est pas livré) et `/security/advisories/new`.
+- [x] `.github/pull_request_template.md` : version détaillée (Summary, Motivation, Changes, How to test, Breaking changes, Screenshots, Checklist de 4 cases) — choix user, pas la version courte.
+
+**Vérif** :
+- `pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build` toujours verts (aucun fichier de code touché).
+- Côté GitHub après push : *Insights → Community Standards* coche tous les items (description, README, CoC, contributing, license, issue templates, PR template).
+- Bouton *New issue* propose les 2 templates au lieu du formulaire vierge.
+- Onglet *Security* du repo affiche le lien *Report a vulnerability*.
+
+**Notes** :
+- **Contributor Covenant 3.0 (pas 2.1)** : la v3 a été publiée mi-2025 par l'Organization for Ethical Source ; structure remaniée (Encouraged / Restricted Behaviors, enforcement ladder explicite). Aucune raison de rester sur 2.1 pour un repo neuf. Texte sous CC BY-SA 4.0, attribution conservée.
+- **Filtre API content policy** : la rédaction automatique du CoC v3 a été bloquée plusieurs fois par le content filter (exemples explicites de comportements). Workaround utilisé : texte officiel copié manuellement par le user, puis seuls les deux placeholders `[NOTE: ...]` adaptés (canal de reporting → `@clemparpa` + lien PVR, suppression de la note de personnalisation de l'enforcement ladder qui n'a pas lieu d'être ici).
+- **Contact 100 % GitHub-native** : décision user de n'exposer aucun email public (CoC + SECURITY.md). Tout passe par le handle `@clemparpa` ou par GitHub Private Vulnerability Reporting. Privacy maximum, fonctionnement standard côté GitHub.
+- **PR template détaillé** : choix user (vs version courte 4-5 cases). Plus de friction par PR mais oblige les contributeurs externes à expliciter motivation/tests/breaking. Cohérent avec un repo template (forks fréquents, peu de PRs upstream).
+- **Auto-labels actifs** : `bug` et `enhancement` posés via la clé YAML `labels:` du template d'issue. Aucune config supplémentaire nécessaire — GitHub crée les labels au premier usage s'ils n'existent pas.
+- **Dépendance S14** : 3 liens dans le repo renvoient une 404 tant que les Settings GitHub ne sont pas configurés en S14 :
+  1. `https://github.com/clemparpa/fluch-react-signals-starter/discussions` (config.yml + futur README) → activer *Discussions* dans Settings → General → Features.
+  2. `https://github.com/clemparpa/fluch-react-signals-starter/security/advisories/new` (SECURITY.md + config.yml + CoC) → activer *Private Vulnerability Reporting* dans Settings → Security & analysis.
+  3. *Insights → Community Standards* affichera 100 % uniquement une fois ces deux activations faites + topics + description repo (S14).
+- **Aucun fichier de code touché** : 7 fichiers ajoutés (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `.github/pull_request_template.md`, `.github/ISSUE_TEMPLATE/{bug_report,feature_request,config}.yml`). CI verte sur les 5 jobs après ajout.
+
+---
+
+## S14 — README polish + Settings GitHub checklist (bonus, hors SPEC initiale)
+**But** : rendre le repo accueillant au premier coup d'œil et finaliser les métadonnées GitHub.
+
+- [ ] Badges en tête du README (après le titre, avant la description) : CI status (`![CI](…/actions/workflows/ci.yml/badge.svg)`), License MIT, Node ≥22, pnpm ≥9, "Use this template" (lien direct vers le generator). Badge Dependabot facultatif.
+- [ ] Section **Contributing** dans le README (avant License) : 3 lignes pointant vers `CONTRIBUTING.md`, le lien direct des issue templates, et `SECURITY.md` pour les vulns.
+- [ ] Section **Community** : lien Discussions (une fois activé), Code of Conduct, contact maintainer.
+- [ ] Vérifier l'ordre conventionnel OSS : badges → description courte → Quickstart → Stack → Scripts → Structure → Signals → CI → Specs/roadmap → Fork → Monorepo → Contributing → Community → License.
+- [ ] **Checklist d'actions Settings côté GitHub** (manuelles côté user, traçables en checkboxes) :
+  - [ ] Activer **Template repository** (Settings → General).
+  - [ ] Renseigner *Description* + *Website* (panneau About en tête du repo).
+  - [ ] Ajouter topics : `react`, `vite`, `vite-template`, `tailwind`, `tailwindcss-v4`, `shadcn`, `base-ui`, `signals`, `preact-signals`, `typescript`, `react-router`, `template`.
+  - [ ] Activer **Discussions** (Settings → General → Features).
+  - [ ] Activer **Private Vulnerability Reporting** (Settings → Security & analysis).
+  - [ ] Vérifier la branch protection rule sur `main` : 5 checks CI required (lint / typecheck / test / audit / build), require linear history, require PR before merge, no force push, no deletions. Si CODEOWNERS ajouté en S16 : ajouter "Require review from Code Owners".
+
+**Vérif** :
+- README rendu (CommonMark) : badges affichés en tête, liens Contributing/Security cliquables.
+- Page du repo : panneau *About* montre description + topics + flag *Template repository*.
+- Une PR factice avec un fichier mal formaté est bloquée par la branch protection.
+
+**Notes** (à compléter une fois implémenté) : TBD.
+
+---
+
+## S15 — Release process : CHANGELOG + tags semver + GitHub Releases (bonus, hors SPEC initiale)
+**But** : tracker explicitement les évolutions du template pour que les forks puissent re-puller des versions identifiées et que les contributeurs sachent ce qui a changé.
+
+- [ ] `CHANGELOG.md` à la racine, format **Keep a Changelog 1.1** + **SemVer 2.0** : section `## [Unreleased]` (sous-rubriques Added / Changed / Fixed / Removed), puis section `## [0.1.0] — <date>` rétroactive listant l'ensemble des stories S01 → S12.
+- [ ] Mettre `package.json#version` à `0.1.0` (probablement à `0.0.0` aujourd'hui, défaut Vite).
+- [ ] Documenter dans `CONTRIBUTING.md` la politique de versioning : **major** = breaking template-wide (changement de stack, suppression d'une dép. structurante) — la barre est volontairement haute car les forks ont divergé ; **minor** = nouvelle capacité (ajout outil/stack) ; **patch** = fix / chore.
+- [ ] Tag annoté `v0.1.0` sur le dernier commit de S12 : `git tag -a v0.1.0 -m "Initial template release" && git push origin v0.1.0`.
+- [ ] Créer la GitHub Release `v0.1.0` via `gh release create v0.1.0 --notes-file <extrait CHANGELOG>` (ou UI) — reprendre les notes 0.1.0 du CHANGELOG.
+- [ ] **Décision automation vs. manuel** : 100 % manuel. Pas de `release-please` / `changesets`. Volume attendu = 1-2 releases/an, surcoût d'automation > bénéfice. Documenté en notes.
+
+**Vérif** :
+- `git tag --list` montre `v0.1.0`.
+- Onglet *Releases* du repo affiche `v0.1.0` avec les notes formatées.
+- Si un badge version est ajouté au README en S14, il reflète `v0.1.0`.
+
+**Notes** (à compléter une fois implémenté) : TBD.
+
+---
+
+## S16 — Governance avancée : CODEOWNERS + FUNDING (optionnelle)
+**But** : verrouiller la gouvernance sur les zones sensibles et offrir un canal de sponsoring. **Story optionnelle** : à n'exécuter que si le projet attire des contributeurs externes (signal : 3+ PRs externes/mois) ou si le maintainer active GitHub Sponsors.
+
+- [ ] `.github/CODEOWNERS` : règle catch-all `* @<maintainer-handle>` au départ. Affiner plus tard (`/src/components/ui/ @design`, `/.github/ @devops`) seulement quand il y a des co-maintainers — sinon c'est du bruit.
+- [ ] Activer en branch protection rule sur `main` : **Require review from Code Owners**. Effet : aucune PR ne merge sans l'aval du maintainer désigné.
+- [ ] `.github/FUNDING.yml` : déclarer les plateformes (`github: <handle>`, `ko_fi: …`, `custom: [url]`). **Pré-requis** : avoir un compte GitHub Sponsors configuré, sinon le bouton "Sponsor" n'apparaît pas.
+
+**Vérif** :
+- PR test : le maintainer est auto-request en reviewer.
+- Bouton "Sponsor" affiché en tête du repo si FUNDING.yml + compte Sponsor valides.
+
+**Notes** (à compléter une fois implémenté) : TBD.
+
+---
+
 ## Verification finale
 
 Après S01→S11, le template est valide ssi **toutes** ces commandes passent dans un clone propre :

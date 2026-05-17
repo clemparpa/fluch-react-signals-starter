@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/clemparpa/fluch-react-signals-starter/discussions
+    about: Questions, ideas, show-and-tell. (Enabled in S14 — link returns 404 until then.)
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/clemparpa/fluch-react-signals-starter/security/advisories/new
+    about: Use GitHub Private Vulnerability Reporting — do not open a public issue for security reports.
