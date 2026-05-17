@@ -1,8 +1,23 @@
 # fluch-react-signals-starter
 
+![CI](https://github.com/clemparpa/fluch-react-signals-starter/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-%E2%89%A59-F69220?logo=pnpm&logoColor=white)
+[![Use this template](https://img.shields.io/badge/use%20this-template-2EA44F?logo=github)](https://github.com/clemparpa/fluch-react-signals-starter/generate)
+
 Opinionated React 19 SPA template — **Vite + TypeScript + Tailwind v4 + shadcn (Base UI variant) + @preact/signals-react + React Router 7**.
 
 Built as a fork-friendly starting point for AI-driven UI work: signals replace most `useState` boilerplate, shadcn components are vendored under `src/components/ui`, and CI blocks merges on lint / typecheck / test / audit / build.
+
+## Quickstart
+
+```sh
+pnpm install
+pnpm dev          # http://localhost:5173 — opens on /showcase
+```
+
+Requires **Node ≥ 22** and **pnpm ≥ 9** (versions pinned via [.nvmrc](.nvmrc) and `packageManager` in [package.json](package.json)).
 
 ## Stack
 
@@ -19,15 +34,6 @@ Built as a fork-friendly starting point for AI-driven UI work: signals replace m
 | Tests        | Vitest 4 + Testing Library + happy-dom           |
 | Git hooks    | Husky + lint-staged                              |
 | CI           | GitHub Actions — 5 parallel jobs                 |
-
-## Quickstart
-
-```sh
-pnpm install
-pnpm dev          # http://localhost:5173 — opens on /showcase
-```
-
-Requires **Node ≥ 22** and **pnpm ≥ 9** (versions pinned via [.nvmrc](.nvmrc) and `packageManager` in [package.json](package.json)).
 
 ## Scripts
 
@@ -111,6 +117,16 @@ When integrating this template as a workspace inside an existing monorepo:
 2. **Adjust [.github/dependabot.yml](.github/dependabot.yml)**: change `directories: ["/"]` to your package path (e.g. `directories: ["/apps/front"]`). If your monorepo already has a `github-actions` entry from another template, keep only one — Dependabot scans `.github/workflows/` repo-wide.
 3. **Merge CI workflows**: this template's `.github/workflows/ci.yml` runs 5 jobs scoped to a single project. In a monorepo you'll likely want to gate jobs on path filters (`paths: ["apps/front/**"]`) or restructure into a matrix.
 4. **Lockfile**: pnpm workspaces use a single root `pnpm-lock.yaml` — Dependabot handles this natively. Point `directories` at the package, not the lockfile.
+
+## Contributing
+
+Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow, commit convention, and local validation command. To report a bug or request a feature, open an issue from one of the [issue templates](.github/ISSUE_TEMPLATE/). For security vulnerabilities, follow [SECURITY.md](SECURITY.md) (do **not** open a public issue).
+
+## Community
+
+- 💬 [Discussions](https://github.com/clemparpa/fluch-react-signals-starter/discussions) — questions, ideas, show-and-tell.
+- 📜 [Code of Conduct](CODE_OF_CONDUCT.md) — Contributor Covenant 3.0.
+- 👤 Maintainer: [@clemparpa](https://github.com/clemparpa).
 
 ## License
 

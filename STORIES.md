@@ -241,10 +241,10 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 ## S14 — README polish + Settings GitHub checklist (bonus, hors SPEC initiale)
 **But** : rendre le repo accueillant au premier coup d'œil et finaliser les métadonnées GitHub.
 
-- [ ] Badges en tête du README (après le titre, avant la description) : CI status (`![CI](…/actions/workflows/ci.yml/badge.svg)`), License MIT, Node ≥22, pnpm ≥9, "Use this template" (lien direct vers le generator). Badge Dependabot facultatif.
-- [ ] Section **Contributing** dans le README (avant License) : 3 lignes pointant vers `CONTRIBUTING.md`, le lien direct des issue templates, et `SECURITY.md` pour les vulns.
-- [ ] Section **Community** : lien Discussions (une fois activé), Code of Conduct, contact maintainer.
-- [ ] Vérifier l'ordre conventionnel OSS : badges → description courte → Quickstart → Stack → Scripts → Structure → Signals → CI → Specs/roadmap → Fork → Monorepo → Contributing → Community → License.
+- [x] Badges en tête du README (après le titre, avant la description) : CI status natif GitHub Actions, License MIT, Node ≥22, pnpm ≥9, "Use this template" (badge cliquable vers le generator). Style shields.io flat. Badge Dependabot skippé (pas d'équivalent officiel).
+- [x] Section **Contributing** dans le README (avant License) : pointe vers `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/`, et `SECURITY.md` pour les vulns.
+- [x] Section **Community** : lien Discussions (404 jusqu'à activation Settings), Code of Conduct, contact maintainer `@clemparpa`.
+- [x] Ordre conventionnel OSS appliqué : badges → description courte → Quickstart → Stack → Scripts → Structure → Signals → CI → Specs/roadmap → Fork → Monorepo → Contributing → Community → License (Quickstart remonté avant Stack ; Contributing + Community insérés avant License).
 - [ ] **Checklist d'actions Settings côté GitHub** (manuelles côté user, traçables en checkboxes) :
   - [ ] Activer **Template repository** (Settings → General).
   - [ ] Renseigner *Description* + *Website* (panneau About en tête du repo).
@@ -258,7 +258,14 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 - Page du repo : panneau *About* montre description + topics + flag *Template repository*.
 - Une PR factice avec un fichier mal formaté est bloquée par la branch protection.
 
-**Notes** (à compléter une fois implémenté) : TBD.
+**Notes** :
+
+- **Côté code (livré dans cette story)** : refonte complète de `README.md` (5 badges shields.io flat + CI natif sous le titre, Quickstart remonté avant Stack, deux nouvelles sections Contributing et Community insérées juste avant License). Aucun fichier de code applicatif touché. Les 4 checkboxes README sont cochées ; les 6 checkboxes Settings restent ouvertes (manuelles côté user dans l'UI GitHub).
+- **Style badges** : shields.io `style=flat` (défaut). CI badge reste natif GitHub Actions (SVG dynamique sur `main`). Badge Dependabot écarté faute de standard officiel.
+- **Maintainer contact** : `@clemparpa` GitHub uniquement, zéro email exposé (cohérence avec S13).
+- **3 liens 404 que cette story prépare** : Discussions (`/discussions`), PVR (`/security/advisories/new`), Use-this-template (`/generate`). Ils deviennent fonctionnels une fois les actions Settings cochées dans l'UI.
+- **Actions Settings GitHub (manuelles côté user)** : (1) Settings → General → cocher *Template repository*, renseigner Description + Website, activer Discussions ; (2) panneau *About* → topics listés ci-dessus ; (3) Settings → Security & analysis → activer **Private vulnerability reporting** ; (4) Settings → Branches → branch protection sur `main` avec les 5 checks CI required (lint / typecheck / test / audit / build), require linear history, require PR before merge, no force push, no deletions.
+- **Critère d'acceptation final** (post-Settings) : *Insights → Community Standards* affiche 100 %, le bouton "Use this template" apparaît dans le header du repo, et une PR factice mal formatée est bloquée par la branch protection.
 
 ---
 
