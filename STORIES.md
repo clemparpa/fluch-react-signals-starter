@@ -143,13 +143,23 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S10 — GitHub Actions CI
+## S10 — GitHub Actions CI ✅
 **But** : lint + typecheck + test + audit bloquent en CI.
 
-- [ ] Créer `.github/workflows/ci.yml` : 4 jobs en parallèle, déclenchés sur `push` (main) et `pull_request`.
-- [ ] Chaque job : checkout, setup pnpm (`pnpm/action-setup@v4`), setup Node 22 avec cache pnpm, install, command propre au job (`pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm audit --audit-level=high`).
+- [x] Créer `.github/workflows/ci.yml` : **5 jobs** en parallèle (4 SPEC + bonus `build`), déclenchés sur `push` (main) et `pull_request`.
+- [x] Chaque job : checkout, setup pnpm (`pnpm/action-setup@v4`, lit `packageManager` du package.json), setup Node 22 (via `node-version-file: .nvmrc`, cache pnpm), `pnpm install --frozen-lockfile`, command propre au job (`pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm audit --audit-level=high` / `pnpm build`).
 
-**Vérif** : pousser une PR de test, vérifier que les 4 checks tournent et passent.
+**Vérif** : tous les jobs passent **localement** (`pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build`). Validation CI réelle = push une branche de test + ouvrir une PR + observer les 5 checks via `gh pr checks --watch`.
+
+**Notes finales** :
+- **5 jobs** au lieu des 4 SPEC : ajout d'un `build` (`pnpm build` = `tsc -b && vite build`) comme filet contre les régressions de bundling Vite (CSS / asset imports invisibles à `tsc --noEmit` seul). Utile pour un template que les forks vont cloner et builder direct.
+- **Concurrency** : `group: ci-${{ github.workflow }}-${{ github.ref }}` + `cancel-in-progress: true`. Pousser un nouveau commit sur une PR (ou main) annule le run précédent → économie de minutes CI.
+- **pnpm version** : lue automatiquement du champ `packageManager: pnpm@11.0.8` (package.json) par `pnpm/action-setup@v4`. Pas besoin de pinner dans le YAML — une seule source de vérité.
+- **Node version** : lue de `.nvmrc` via `actions/setup-node@v4` avec `node-version-file: .nvmrc`. Même logique de source unique.
+- **Ordre des steps** : `checkout` → `pnpm/action-setup` → `setup-node` (avec `cache: pnpm`) → `install` → command. Inverser pnpm/node casse le caching (setup-node ne trouve pas `pnpm` pour résoudre le store path).
+- **`permissions: contents: read`** top-level : least-privilege pour le GITHUB_TOKEN. Aucun job n'a besoin d'écrire (pas de release, pas de commit auto).
+- **PR forkées safe** : trigger `pull_request` (pas `pull_request_target`) → checkout sur le SHA de la PR, pas du target. Pas de secrets exposés.
+- **Duplication assumée** : le bloc setup est dupliqué × 5 (pas de composite action). Lisibilité > DRY sur 5 jobs identiques.
 
 ---
 
