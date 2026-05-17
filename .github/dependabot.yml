@@ -12,6 +12,11 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # Skip patch bumps (8.0.12 → 8.0.13). They get pulled in passively
+    # with the next minor anyway — too noisy as standalone PRs.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
     groups:
       production-dependencies:
         dependency-type: "production"

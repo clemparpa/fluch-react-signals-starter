@@ -203,6 +203,7 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 - **`audit` CI et Dependabot complémentaires** : audit = vulnérabilités urgentes déclenchées à chaque push/PR (réactif). Dependabot = updates de routine (proactif, weekly). Pas de redondance, ils couvrent deux phases du cycle.
 - **PRs initiales en rafale** : au tout 1er run après détection, Dependabot rattrape les bumps en retard et peut ouvrir 1-2 PRs hors planning. Attendu, normal.
 - **Pre-commit hook S08** : `lint-staged` glob (`*.{ts,tsx,js,jsx,json,css}`) ne matche pas `.yml`/`.md`, donc skip propre comme pour S10/S11. Seul `tsc -b --noEmit` du hook tourne.
+- **Filtre patch updates** : ajout post-livraison d'un `ignore: [{dependency-name: "*", update-types: ["version-update:semver-patch"]}]` sur l'ecosystem `npm`. Raison : le 1er run a ouvert 3 PRs patch-only (`vite 8.0.12→8.0.13`, etc.) qui sont du bruit pur (les patches sont bundlés dans le minor suivant). Reste actif : minor + major. `github-actions` ecosystem n'est pas touché (presque tous ses bumps sont des majors, faible volume).
 
 ---
 
