@@ -272,17 +272,18 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 ## S15 — Release process : CHANGELOG + tags semver + GitHub Releases (bonus, hors SPEC initiale)
 **But** : tracker explicitement les évolutions du template pour que les forks puissent re-puller des versions identifiées et que les contributeurs sachent ce qui a changé.
 
-- [ ] `CHANGELOG.md` à la racine, format **Keep a Changelog 1.1** + **SemVer 2.0** : section `## [Unreleased]` (sous-rubriques Added / Changed / Fixed / Removed), puis section `## [0.1.0] — <date>` rétroactive listant l'ensemble des stories S01 → S12.
+- [ ] `CHANGELOG.md` à la racine, format **Keep a Changelog 1.1** + **SemVer 2.0** : section `## [Unreleased]` (sous-rubriques Added / Changed / Fixed / Removed), puis section `## [0.1.0] — <date>` rétroactive listant l'ensemble des stories **S01 → S14** (couvre tout l'état du repo au moment de la première release, y compris S13 community files et S14 README polish livrés après la rédaction initiale de S15).
 - [ ] Mettre `package.json#version` à `0.1.0` (probablement à `0.0.0` aujourd'hui, défaut Vite).
 - [ ] Documenter dans `CONTRIBUTING.md` la politique de versioning : **major** = breaking template-wide (changement de stack, suppression d'une dép. structurante) — la barre est volontairement haute car les forks ont divergé ; **minor** = nouvelle capacité (ajout outil/stack) ; **patch** = fix / chore.
-- [ ] Tag annoté `v0.1.0` sur le dernier commit de S12 : `git tag -a v0.1.0 -m "Initial template release" && git push origin v0.1.0`.
+- [ ] Tag annoté `v0.1.0` sur le dernier commit de S15 (= commit qui ajoute CHANGELOG + bump version) : `git tag -a v0.1.0 -m "Initial template release" && git push origin v0.1.0`.
 - [ ] Créer la GitHub Release `v0.1.0` via `gh release create v0.1.0 --notes-file <extrait CHANGELOG>` (ou UI) — reprendre les notes 0.1.0 du CHANGELOG.
+- [ ] Ajouter un badge version au README (juste après les autres badges en tête, format shields.io dynamique `github/v/release/clemparpa/fluch-react-signals-starter?logo=github`) — il affiche `v0.1.0` automatiquement dès que la GitHub Release est publiée.
 - [ ] **Décision automation vs. manuel** : 100 % manuel. Pas de `release-please` / `changesets`. Volume attendu = 1-2 releases/an, surcoût d'automation > bénéfice. Documenté en notes.
 
 **Vérif** :
 - `git tag --list` montre `v0.1.0`.
 - Onglet *Releases* du repo affiche `v0.1.0` avec les notes formatées.
-- Si un badge version est ajouté au README en S14, il reflète `v0.1.0`.
+- Le badge version du README affiche `v0.1.0` (peut nécessiter un hard-refresh du proxy d'images GitHub après publication de la Release).
 
 **Notes** (à compléter une fois implémenté) : TBD.
 
