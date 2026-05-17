@@ -163,14 +163,21 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S11 — Finalisation : designs/active.md, README, sanity check
+## S11 — Finalisation : designs/active.md, README, sanity check ✅
 **But** : repo prêt à être utilisé comme template GitHub.
 
-- [ ] Créer `designs/active.md` avec un placeholder minimaliste (titre "Active design" + note expliquant que le skill `apply-theme` modifiera ce fichier).
-- [ ] Réécrire `README.md` : présentation rapide, `pnpm install && pnpm dev`, liens vers `SPEC.md` et `STORIES.md`, mention "template — fork moi".
-- [ ] Vérifier `.gitignore` (couvre `node_modules`, `dist`, `.env.local`, `coverage`, `.vite`, etc.).
-- [ ] Sanity check global : dans un dossier propre, `pnpm install && pnpm dev` ouvre `/showcase` proprement ; `pnpm test && pnpm lint && pnpm typecheck && pnpm audit --audit-level=high` passent tous.
-- [ ] Commit final + push, marquer le repo comme "Template repository" dans les settings GitHub.
+- [x] Créer `designs/active.md` avec un placeholder minimaliste (titre "Active design" + note expliquant que le skill `apply-theme` modifiera ce fichier).
+- [x] Réécrire `README.md` (en anglais — convention OSS) : présentation, stack tableau, quickstart, scripts, structure, signals, CI, liens SPEC/STORIES, mention "fork this template".
+- [x] Vérifier `.gitignore` (couvre `node_modules`, `dist`, `.env*`, `coverage`, `.vite/`, `.pnpm-store`, `.DS_Store`, etc.) — déjà OK depuis S01, rien à ajouter.
+- [x] Sanity check **local** : `pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build` passent tous (check from-scratch dans un clone propre = à faire côté user).
+- [x] Supprimer le reliquat `--version/` à la racine (artefact filesystem du bug husky en S08, non tracké git).
+- [x] Commit final + push. **Flag "Template repository"** : à activer manuellement par l'user dans Settings GitHub.
+
+**Notes finales** :
+- **README en anglais** : choix volontaire — langue standard de l'open-source pour qu'un fork étranger soit lisible immédiatement. SPEC/STORIES restent en français (docs internes au design du template).
+- **`designs/active.md`** : court placeholder qui pointe vers `src/index.css` (tokens oklch shadcn par défaut) en attendant qu'un skill `apply-theme` futur le remplisse vraiment.
+- **`--version/`** : reliquat de S08 (`pnpm exec husky --version` qui crée un dossier nommé `--version` au lieu d'afficher la version). Non tracké en git, mais polluait `ls`. Supprimé.
+- **Sanity check from-scratch** : pas fait dans cette story (juste local). User a confirmé qu'il le ferait lui-même plus tard pour validation finale.
 
 ---
 
