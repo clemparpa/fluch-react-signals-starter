@@ -181,6 +181,31 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
+## S12 — Dependabot (bonus, hors SPEC initiale) ✅
+**But** : garder le template (et ses forks) à jour automatiquement, sans noyer le user sous les PRs.
+
+- [x] Créer `.github/dependabot.yml` avec **2 ecosystems** :
+  - **`npm`** (couvre `pnpm-lock.yaml` nativement depuis 2024) sur `directories: ["/"]`, cadence **weekly**, `open-pull-requests-limit: 5`, **grouping** en 2 paquets : `development-dependencies` (type `development`) et `production-dependencies` (type `production`) → 2 PRs/semaine max au lieu de 30 PRs unitaires.
+  - **`github-actions`** sur `directory: "/"`, cadence **weekly**, pour bumper `actions/checkout`, `actions/setup-node`, `pnpm/action-setup` quand de nouvelles majeures sortent.
+- [x] Commentaire en tête du fichier expliquant l'**ajustement monorepo** : changer `directories: ["/"]` en `directories: ["/apps/front", ...]` quand le template est intégré dans un monorepo.
+- [x] Ajouter une section **"Monorepo integration"** dans `README.md` qui couvre l'ajustement de `directories`, la déduplication du `github-actions` ecosystem, le merge des workflows CI, et la précision pnpm-workspace lockfile racine.
+- [x] Validation `dependabot.yml` localement : YAML parse OK via `python3 -c "import yaml; yaml.safe_load(...)"`. Validation schéma = côté GitHub après push.
+
+**Vérif** :
+- Local : YAML parse OK + sanity CI complète (`pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build`) tous verts.
+- Côté GitHub après push : onglet *Insights → Dependency graph → Dependabot* affiche la config détectée + 1re passe sans erreur. PRs initiales possibles dans les heures qui suivent (rattrapage), puis cadence weekly.
+- CI 5 jobs reste verte sur le push S12.
+
+**Notes finales** :
+- **`directories: ["/"]`** (pluriel, format glob) volontairement choisi pour `npm` — conversion monorepo plus naturelle (`["/apps/front"]`). Pour `github-actions` on garde `directory: "/"` (singulier) car le scope est toujours le repo entier (`.github/workflows/`).
+- **Grouping nommé** `production-dependencies` / `development-dependencies` apparaît dans le titre des PRs (`chore(deps): bump the production-dependencies group …`). Lisibilité immédiate.
+- **Pas de validation locale du schéma Dependabot** : aucune CLI officielle. La syntaxe YAML est vérifiée localement, mais le schéma (clés valides, types) ne l'est que côté GitHub. Workaround : si erreur, GitHub affiche un encart rouge dans l'onglet Dependabot avec le diagnostic.
+- **`audit` CI et Dependabot complémentaires** : audit = vulnérabilités urgentes déclenchées à chaque push/PR (réactif). Dependabot = updates de routine (proactif, weekly). Pas de redondance, ils couvrent deux phases du cycle.
+- **PRs initiales en rafale** : au tout 1er run après détection, Dependabot rattrape les bumps en retard et peut ouvrir 1-2 PRs hors planning. Attendu, normal.
+- **Pre-commit hook S08** : `lint-staged` glob (`*.{ts,tsx,js,jsx,json,css}`) ne matche pas `.yml`/`.md`, donc skip propre comme pour S10/S11. Seul `tsc -b --noEmit` du hook tourne.
+
+---
+
 ## Verification finale
 
 Après S01→S11, le template est valide ssi **toutes** ces commandes passent dans un clone propre :

@@ -103,6 +103,15 @@ pnpm dev
 
 …and start replacing the showcase page with your own routes.
 
+## Monorepo integration
+
+When integrating this template as a workspace inside an existing monorepo:
+
+1. **Move the source** into your monorepo path, e.g. `apps/front/`.
+2. **Adjust [.github/dependabot.yml](.github/dependabot.yml)**: change `directories: ["/"]` to your package path (e.g. `directories: ["/apps/front"]`). If your monorepo already has a `github-actions` entry from another template, keep only one — Dependabot scans `.github/workflows/` repo-wide.
+3. **Merge CI workflows**: this template's `.github/workflows/ci.yml` runs 5 jobs scoped to a single project. In a monorepo you'll likely want to gate jobs on path filters (`paths: ["apps/front/**"]`) or restructure into a matrix.
+4. **Lockfile**: pnpm workspaces use a single root `pnpm-lock.yaml` — Dependabot handles this natively. Point `directories` at the package, not the lockfile.
+
 ## License
 
 MIT.

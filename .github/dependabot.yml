@@ -1,0 +1,24 @@
+# Dependabot config for fluch-react-signals-starter.
+#
+# MONOREPO USERS: change `directories: ["/"]` below to your package path,
+# e.g. `directories: ["/apps/front"]`. If another template in your monorepo
+# already declares a `github-actions` entry at the root, keep only one —
+# Dependabot scans `.github/workflows/` repo-wide.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directories: ["/"]
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
