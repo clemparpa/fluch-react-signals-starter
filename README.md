@@ -5,6 +5,7 @@
 ![Node](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-%E2%89%A59-F69220?logo=pnpm&logoColor=white)
 [![Use this template](https://img.shields.io/badge/use%20this-template-2EA44F?logo=github)](https://github.com/clemparpa/fluch-react-signals-starter/generate)
+![Version](https://img.shields.io/github/v/release/clemparpa/fluch-react-signals-starter?logo=github)
 
 Opinionated React 19 SPA template — **Vite + TypeScript + Tailwind v4 + shadcn (Base UI variant) + @preact/signals-react + React Router 7**.
 

@@ -272,20 +272,28 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 ## S15 — Release process : CHANGELOG + tags semver + GitHub Releases (bonus, hors SPEC initiale)
 **But** : tracker explicitement les évolutions du template pour que les forks puissent re-puller des versions identifiées et que les contributeurs sachent ce qui a changé.
 
-- [ ] `CHANGELOG.md` à la racine, format **Keep a Changelog 1.1** + **SemVer 2.0** : section `## [Unreleased]` (sous-rubriques Added / Changed / Fixed / Removed), puis section `## [0.1.0] — <date>` rétroactive listant l'ensemble des stories **S01 → S14** (couvre tout l'état du repo au moment de la première release, y compris S13 community files et S14 README polish livrés après la rédaction initiale de S15).
-- [ ] Mettre `package.json#version` à `0.1.0` (probablement à `0.0.0` aujourd'hui, défaut Vite).
-- [ ] Documenter dans `CONTRIBUTING.md` la politique de versioning : **major** = breaking template-wide (changement de stack, suppression d'une dép. structurante) — la barre est volontairement haute car les forks ont divergé ; **minor** = nouvelle capacité (ajout outil/stack) ; **patch** = fix / chore.
+- [x] `CHANGELOG.md` à la racine, format **Keep a Changelog 1.1** + **SemVer 2.0** : section `## [Unreleased]` (sous-rubriques Added / Changed / Fixed / Removed), puis section `## [0.1.0] — <date>` rétroactive listant l'ensemble des stories **S01 → S14** (couvre tout l'état du repo au moment de la première release, y compris S13 community files et S14 README polish livrés après la rédaction initiale de S15).
+- [x] Mettre `package.json#version` à `0.1.0` (probablement à `0.0.0` aujourd'hui, défaut Vite).
+- [x] Documenter dans `CONTRIBUTING.md` la politique de versioning : **major** = breaking template-wide (changement de stack, suppression d'une dép. structurante) — la barre est volontairement haute car les forks ont divergé ; **minor** = nouvelle capacité (ajout outil/stack) ; **patch** = fix / chore.
 - [ ] Tag annoté `v0.1.0` sur le dernier commit de S15 (= commit qui ajoute CHANGELOG + bump version) : `git tag -a v0.1.0 -m "Initial template release" && git push origin v0.1.0`.
 - [ ] Créer la GitHub Release `v0.1.0` via `gh release create v0.1.0 --notes-file <extrait CHANGELOG>` (ou UI) — reprendre les notes 0.1.0 du CHANGELOG.
-- [ ] Ajouter un badge version au README (juste après les autres badges en tête, format shields.io dynamique `github/v/release/clemparpa/fluch-react-signals-starter?logo=github`) — il affiche `v0.1.0` automatiquement dès que la GitHub Release est publiée.
-- [ ] **Décision automation vs. manuel** : 100 % manuel. Pas de `release-please` / `changesets`. Volume attendu = 1-2 releases/an, surcoût d'automation > bénéfice. Documenté en notes.
+- [x] Ajouter un badge version au README (juste après les autres badges en tête, format shields.io dynamique `github/v/release/clemparpa/fluch-react-signals-starter?logo=github`) — il affiche `v0.1.0` automatiquement dès que la GitHub Release est publiée.
+- [x] **Décision automation vs. manuel** : seed 0.1.0 manuel (les commits S01→S14 n'ont pas de changesets associés), puis **Changesets (`@changesets/cli` + `changesets/action@v1`)** pour 0.2.0+ — `.changeset/config.json` (default + `commit: false`, `access: "restricted"`, `baseBranch: "main"`) + workflow `.github/workflows/release.yml` (`version: pnpm changeset version`, `publish: pnpm changeset tag` — pas de publish npm puisque `private: true`). À chaque PR avec changement user-visible, le contributeur exécute `pnpm changeset` pour ajouter un `.changeset/<hash>.md` (bump level + résumé). Au merge sur `main`, l'action accumule les changesets et ouvre une "Version Packages" PR contenant le bump CHANGELOG + bump `package.json#version` ; merge → tag annoté + GitHub Release créés auto.
 
 **Vérif** :
 - `git tag --list` montre `v0.1.0`.
 - Onglet *Releases* du repo affiche `v0.1.0` avec les notes formatées.
 - Le badge version du README affiche `v0.1.0` (peut nécessiter un hard-refresh du proxy d'images GitHub après publication de la Release).
 
-**Notes** (à compléter une fois implémenté) : TBD.
+**Notes** :
+
+- **Date 0.1.0** : `2026-05-18`.
+- **Style CHANGELOG** : Keep a Changelog 1.1 + SemVer 2.0. Pour 0.1.0, groupement thématique dans `### Added` (Core stack / Tooling / CI/CD / Demo / Docs / Community) avec story-tag en référence, plutôt qu'une ligne par story — plus lisible pour un end-user qui découvre le repo. Liens de comparaison `[Unreleased]` et `[0.1.0]` en bas du fichier.
+- **Automation** : seed 0.1.0 manuel (S01→S14 sans changesets) ; **Changesets** prend le relais pour 0.2.0+. Fichiers ajoutés : `@changesets/cli` en devDependency, `.changeset/config.json` (default généré par `pnpm changeset init`, conserve `commit: false` + `access: "restricted"` cohérent avec `private: true`), `.changeset/README.md` (doc standard), `.github/workflows/release.yml` (permissions `contents: write` + `pull-requests: write`, utilise `changesets/action@v1` avec `version: pnpm changeset version` + `publish: pnpm changeset tag` — `tag` plutôt que `publish` car pas de publish npm). Décision révisée vs. spec initiale ("100 % manuel") puis re-révisée vs. plan ("release-please") — l'user a finalement opté pour Changesets (qu'il connaît déjà sur un autre projet) parce qu'il préfère le contrôle déclaratif (1 changeset par PR avec notes user-facing rédigées explicitement) plutôt que la dérivation auto depuis les commit messages.
+- **Format CHANGELOG** : 0.1.0 utilise Keep a Changelog 1.1 (sections Added/Changed/Fixed/Removed). À partir de 0.2.0, Changesets ajoutera ses propres entrées au format `## X.Y.Z` + sous-sections `### Major/Minor/Patch Changes`. Mix volontaire et documenté : pas de migration rétroactive du seed 0.1.0.
+- **Position du badge version dans README** : 6e position, juste après "Use this template", en `![Version](https://img.shields.io/github/v/release/clemparpa/fluch-react-signals-starter?logo=github)`. Le badge sera 404 (image cassée) tant que la GitHub Release `v0.1.0` n'est pas publiée — c'est attendu. Une fois la Release créée, un hard-refresh du proxy `camo.githubusercontent.com` peut être nécessaire pour voir l'image s'afficher.
+- **2 checkboxes restantes** (tag annoté + GitHub Release) : exécutées **après** le commit S15 et son push sur main, dans la foulée (cf. `git tag -a v0.1.0 ... && git push origin v0.1.0` puis `gh release create v0.1.0 --notes-file <extrait>`).
+- **Dépendance Dependabot** (hors scope S15) : les commits Dependabot actuels sont du style `Bump <dep>` (pas Conventional Commits) → ne déclencheront pas release-please. Solution future = ajouter `commit-message.prefix: "chore"` dans `.github/dependabot.yml`. À traiter en story dédiée ou patch post-S15.
 
 ---
 

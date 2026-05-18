@@ -1,7 +1,7 @@
 {
   "name": "fluch-react-signals-starter",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "packageManager": "pnpm@11.0.8",
   "engines": {
@@ -50,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@biomejs/biome": "2.4.15",
+    "@changesets/cli": "^2.31.0",
     "@preact/signals-react-transform": "^0.8.1",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/vite": "^4.3.0",

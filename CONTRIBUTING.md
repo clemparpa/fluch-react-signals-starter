@@ -52,6 +52,18 @@ Two styles coexist in this repo, by intent:
 
 Example: `fix: clear toast queue when route changes`.
 
+## Versioning
+
+This project follows [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). Changes are logged in [CHANGELOG.md](CHANGELOG.md) (format: [Keep a Changelog 1.1](https://keepachangelog.com/en/1.1.0/)).
+
+- **major** (X.0.0) — breaking template-wide changes (stack swap, removal of a structural dependency). The bar is intentionally high: forks have diverged and forced upgrades are costly.
+- **minor** (0.X.0) — new capability (additional tool, new stack layer, new opinionated default).
+- **patch** (0.0.X) — bug fix, chore, dependency bump, docs.
+
+Releases are produced by [Changesets](https://github.com/changesets/changesets). Whenever a PR introduces a user-visible change (feature, fix, breaking change), the contributor runs `pnpm changeset` to add a markdown file under `.changeset/` describing the change and its bump level (major/minor/patch). On merge to `main`, the [changesets action](https://github.com/changesets/action) accumulates pending changesets and opens (or updates) a "Version Packages" PR that contains the version bump and CHANGELOG entry. Merging that PR creates the annotated git tag and the GitHub Release automatically.
+
+Chore-only PRs (docs, refactors with no observable change, tests, internal tooling) don't need a changeset.
+
 ## Adding a story
 
 Setup stories live in two places:
