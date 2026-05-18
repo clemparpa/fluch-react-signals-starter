@@ -297,16 +297,53 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S16 — Governance avancée : CODEOWNERS + FUNDING (optionnelle)
-**But** : verrouiller la gouvernance sur les zones sensibles et offrir un canal de sponsoring. **Story optionnelle** : à n'exécuter que si le projet attire des contributeurs externes (signal : 3+ PRs externes/mois) ou si le maintainer active GitHub Sponsors.
+## S17 — better-auth (client SPA, serveur hors scope) (bonus, hors SPEC initiale)
+**But** : câbler le **client** `better-auth` (sign-up / sign-in / session) dans le template, en laissant le serveur d'auth à la charge de l'user. Cohérent avec la vocation "starter SPA" — le backend reste un template séparé (ex. le template backend perso du maintainer), branché via une variable d'env.
 
-- [ ] `.github/CODEOWNERS` : règle catch-all `* @<maintainer-handle>` au départ. Affiner plus tard (`/src/components/ui/ @design`, `/.github/ @devops`) seulement quand il y a des co-maintainers — sinon c'est du bruit.
-- [ ] Activer en branch protection rule sur `main` : **Require review from Code Owners**. Effet : aucune PR ne merge sans l'aval du maintainer désigné.
-- [ ] `.github/FUNDING.yml` : déclarer les plateformes (`github: <handle>`, `ko_fi: …`, `custom: [url]`). **Pré-requis** : avoir un compte GitHub Sponsors configuré, sinon le bouton "Sponsor" n'apparaît pas.
+- [ ] Installer la dépendance : `pnpm add better-auth`.
+- [ ] Créer `src/lib/auth-client.ts` :
+  ```ts
+  import { createAuthClient } from "better-auth/react"
+  export const authClient = createAuthClient({
+    baseURL: import.meta.env.VITE_AUTH_BASE_URL,
+  })
+  export const { signIn, signUp, signOut, useSession } = authClient
+  ```
+  Le re-export nommé limite la surface d'import côté pages.
+- [ ] Ajouter `.env.example` à la racine avec la variable `VITE_AUTH_BASE_URL=http://localhost:8000` + un commentaire au-dessus expliquant que **le template ne livre aucun serveur** — c'est à l'user de pointer ici un backend better-auth (son propre serveur, le template backend perso, ou une autre instance compat).
+- [ ] Page démo `src/pages/auth.tsx` (route `/auth` ajoutée à `src/router.tsx`) :
+  - Deux cartes shadcn (`Card`) côte-à-côte : **Sign in** (email + password) et **Sign up** (name + email + password).
+  - Formulaires avec composants shadcn (`Input`, `Label`, `Button`) + `useSignal()` pour l'état local des champs.
+  - **Bandeau d'alerte affiché en haut de page, toujours visible** :
+    - Si `import.meta.env.VITE_AUTH_BASE_URL` est `undefined` ou vide → `Alert variant="destructive"` : *"No auth backend configured. Set `VITE_AUTH_BASE_URL` in your `.env` to point at a running better-auth server."*
+    - Sinon → `Alert` info : *"Auth backend: `<VITE_AUTH_BASE_URL value>`"* — l'URL est affichée littéralement à l'écran pour rendre le couplage explicite et débuggable d'un coup d'œil.
+  - Sous les deux cartes : bloc "Current session" qui lit `useSession()` (loading / signed-in user + bouton Sign out / not signed in).
+- [ ] Ajouter un lien `/auth` dans le header du layout `src/layouts/root.tsx` à côté du lien Showcase — accessible depuis n'importe quelle page.
+- [ ] Section **Authentication** dans le README, insérée juste après la section Signals : explique le découplage frontend / backend (le template ne ship que le client), le rôle de `VITE_AUTH_BASE_URL`, et pointe vers la doc officielle [better-auth.com](https://better-auth.com) pour monter un serveur. Mentionner explicitement que tester `/auth` sans backend = bandeau rouge + formulaires en erreur réseau attendue.
 
 **Vérif** :
-- PR test : le maintainer est auto-request en reviewer.
-- Bouton "Sponsor" affiché en tête du repo si FUNDING.yml + compte Sponsor valides.
+- `pnpm dev` sans `.env` (ou `VITE_AUTH_BASE_URL` vide) : la page `/auth` rend les formulaires + bandeau rouge — pas de crash, pas d'écran blanc.
+- Avec un backend better-auth lancé sur la baseURL configurée : sign-up → user créé côté serveur, session établie, `useSession()` affiche le user dans le bloc inférieur, bouton Sign out fonctionnel.
+- `pnpm typecheck` + `pnpm build` verts (le client `better-auth` est entièrement typé).
+
+**Notes** (à compléter une fois implémenté) : TBD.
+
+---
+
+## S18 — `@fluch/signal-store` (state management) (bonus, hors SPEC initiale)
+**But** : ajouter `@fluch/signal-store` au template avec un exemple minimal qui démontre la composition `withState` + `withComputed` + `withMethods`. Cohérent avec le choix Signals déjà fait en S04 — le store est une couche de composition au-dessus, qui rend `withState`/`withComputed` réactifs sans Provider ni hook.
+
+- [ ] Installer les dépendances core : `pnpm add @fluch/signal-store @preact/signals-core rxjs`.
+  - `@preact/signals-core` est déjà tiré transitivement par `@preact/signals-react` (S04), mais le déclarer en direct est plus propre (visibilité dans `package.json`).
+  - `rxjs` est requis par `rxMethod` (cf. `references/core.md`) — installé même si l'exemple v1 du template ne s'en sert pas, pour ne pas obliger l'user à le rajouter dès qu'il touche aux side-effects async.
+- [ ] Créer `src/stores/counter.ts` : exemple minimal `signalStore(withState, withComputed, withMethods)` (compteur avec `count`, dérivés `double` + `isPositive`, méthodes `increment` / `decrement` / `reset`) — repris quasi-mot pour mot de la section "Complete example" du SKILL.md du package (cf. `skills/@fluch-signal-store/SKILL.md`).
+- [ ] Câbler la démo dans la **Showcase** (page existante S06) : nouvelle section "Signal Store" avec 3 boutons (increment / decrement / reset) et l'affichage live des 3 valeurs (`count.value` / `double.value` / `isPositive.value`). Le Babel transform Signals (S04) rend la subscription auto — **pas de hook**, juste lire `.value` dans le JSX.
+- [ ] Section **State management** dans le README, juste après la section Signals : positionne `@preact/signals-react` (réactivité fine, S04) vs `@fluch/signal-store` (composition de state). Pointe vers `skills/@fluch-signal-store/SKILL.md` + `skills/@fluch-signal-store/references/` pour la suite (entities, React Provider scopé, RxJS side-effects, Redux DevTools).
+
+**Vérif** :
+- `pnpm dev` : la Showcase affiche la section Signal Store, les 3 valeurs sont live, les 3 boutons mutent l'état sans re-render manuel ni `useState`.
+- `pnpm typecheck` : aucune erreur, l'inférence du store est complète (autocomplete sur `store.count.value`, `store.double.value`, `store.increment()`, etc.).
+- `pnpm build` : OK. Coût indicatif : ~3 kb gzip d'après le SKILL.md.
 
 **Notes** (à compléter une fois implémenté) : TBD.
 
@@ -329,3 +366,18 @@ pnpm audit --audit-level=high   # OK
 Bonus :
 - Un commit avec un fichier mal formaté est reformaté par le pre-commit.
 - Une PR factice déclenche les 4 jobs GitHub Actions et tous passent au vert.
+
+---
+
+## S16 — Governance avancée : CODEOWNERS + FUNDING (optionnelle)
+**But** : verrouiller la gouvernance sur les zones sensibles et offrir un canal de sponsoring. **Story optionnelle** : à n'exécuter que si le projet attire des contributeurs externes (signal : 3+ PRs externes/mois) ou si le maintainer active GitHub Sponsors.
+
+- [ ] `.github/CODEOWNERS` : règle catch-all `* @<maintainer-handle>` au départ. Affiner plus tard (`/src/components/ui/ @design`, `/.github/ @devops`) seulement quand il y a des co-maintainers — sinon c'est du bruit.
+- [ ] Activer en branch protection rule sur `main` : **Require review from Code Owners**. Effet : aucune PR ne merge sans l'aval du maintainer désigné.
+- [ ] `.github/FUNDING.yml` : déclarer les plateformes (`github: <handle>`, `ko_fi: …`, `custom: [url]`). **Pré-requis** : avoir un compte GitHub Sponsors configuré, sinon le bouton "Sponsor" n'apparaît pas.
+
+**Vérif** :
+- PR test : le maintainer est auto-request en reviewer.
+- Bouton "Sponsor" affiché en tête du repo si FUNDING.yml + compte Sponsor valides.
+
+**Notes** (à compléter une fois implémenté) : TBD.

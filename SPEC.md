@@ -11,8 +11,10 @@ Template React prêt à l'emploi pour bootstraper un projet stylé via un agent 
 | Framework | **React 19** | Stable, compat Base UI et Signals via Babel transform |
 | Routing | **React Router 7 — data router SPA** (`createBrowserRouter`) | Framework mode incompatible avec le Babel transform de Signals (le plugin `reactRouter()` remplace `@vitejs/plugin-react` et n'expose pas d'option `babel`). Data router suffit pour un SPA pur. |
 | State | **`@preact/signals-react`** ≥ 2.3.0 + **`@preact/signals-react-transform`** | API minimale, pas de Provider, transform Babel auto. v3+ de signals-react a retiré l'auto-tracking via internals React 19 → le transform Babel est la seule voie auto. |
+| Store | **`@fluch/signal-store`** + **`@preact/signals-core`** + **`rxjs`** | Composition de state (`withState` / `withComputed` / `withMethods`) au-dessus de Signals, modèle NgRx SignalStore, ~3 kb gzip, sync-only v1. `rxjs` requis par `rxMethod` pour les side-effects async. |
 | CSS | **Tailwind CSS v4** + **`@tailwindcss/vite`** | Config CSS-first (`@theme`), HMR natif |
 | Composants | **shadcn/ui (variant Base UI)** | Base UI plus complet que Radix (Combobox, Drawer…), API proche, stable depuis déc 2025 |
+| Auth (client) | **`better-auth`** | Client uniquement (`createAuthClient`) — le serveur d'auth est hors scope du template, branché par l'user via `VITE_AUTH_BASE_URL`. Cohérent avec l'esprit "starter SPA pur". |
 | Lang | TypeScript strict étendu | `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch` |
 | Package manager | **pnpm** ≥ 9 | — |
 | Runtime | **Node ≥ 22** | Fixé via `engines` + `.nvmrc` |
@@ -36,10 +38,14 @@ fluch-react-signals-starter/
 │   │   └── ui/                  # composants shadcn (variant Base UI), via `shadcn add --all`
 │   ├── pages/
 │   │   ├── showcase.tsx         # vue exhaustive — cible visuelle du skill apply-theme
-│   │   └── home.tsx             # placeholder pour l'app de l'user
+│   │   ├── home.tsx             # placeholder pour l'app de l'user
+│   │   └── auth.tsx             # démo sign-in / sign-up better-auth (S17)
 │   ├── lib/
 │   │   ├── utils.ts             # cn() helper (généré par shadcn init)
-│   │   └── signals.ts           # signals partagés (ex: themeMode)
+│   │   ├── signals.ts           # signals partagés (ex: themeMode)
+│   │   └── auth-client.ts       # `createAuthClient` better-auth (S17)
+│   ├── stores/
+│   │   └── counter.ts           # exemple `@fluch/signal-store` câblé sur la Showcase (S18)
 │   ├── styles/
 │   │   └── globals.css          # ★ cible d'écriture du skill apply-theme
 │   ├── test/
@@ -58,6 +64,7 @@ fluch-react-signals-starter/
 ├── tsconfig.node.json
 ├── package.json
 ├── .nvmrc
+├── .env.example                 # `VITE_AUTH_BASE_URL` à câbler côté user (S17)
 ├── README.md
 └── STORIES.md                   # backlog de setup du template
 ```
