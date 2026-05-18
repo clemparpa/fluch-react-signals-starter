@@ -12,6 +12,9 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     # Skip patch bumps (8.0.12 → 8.0.13). They get pulled in passively
     # with the next minor anyway — too noisy as standalone PRs.
     ignore:
@@ -27,3 +30,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
