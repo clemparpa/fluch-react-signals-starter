@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { createMemoryRouter, RouterProvider } from "react-router"
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it } from "vitest"
 import { routes } from "@/router"
+import { counter } from "@/stores/counter"
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -10,6 +11,10 @@ function renderAt(path: string) {
 }
 
 describe("Showcase", () => {
+  afterEach(() => {
+    counter.reset()
+  })
+
   it("rend le titre 'Showcase'", () => {
     renderAt("/showcase")
     expect(screen.getByRole("heading", { level: 1, name: "Showcase" })).toBeInTheDocument()
@@ -26,5 +31,14 @@ describe("Showcase", () => {
 
     await user.click(screen.getByRole("button", { name: /^theme: dark$/ }))
     expect(document.documentElement.classList.contains("dark")).toBe(false)
+  })
+
+  it("le store counter increment passe count à 1", async () => {
+    const user = userEvent.setup()
+    renderAt("/showcase")
+
+    expect(screen.getByText("count: 0")).toBeInTheDocument()
+    await user.click(screen.getByRole("button", { name: "Increment" }))
+    expect(screen.getByText("count: 1")).toBeInTheDocument()
   })
 })

@@ -81,6 +81,25 @@ export function Counter() {
 }
 ```
 
+## State management
+
+For state that goes beyond a single isolated signal, the template ships [`@fluch/signal-store`](skills/@fluch-signal-store/SKILL.md) — a small (~3 kb gzip), fully typed lib built on Preact signals. Stores are composed from features (`withState` + `withComputed` + `withMethods`) and exposed as fine-grained signals — no Provider, no hook, no selectors.
+
+`@preact/signals-react` gives you raw fine-grained reactivity (above). `@fluch/signal-store` is the **composition layer on top**: it groups related signals, derives computed values, and bundles synchronous mutations behind named methods. Both cohabit — use signals for one-off reactive cells, the store for cohesive state.
+
+```ts
+import { computed } from "@preact/signals-core"
+import { patchState, signalStore, withComputed, withMethods, withState } from "@fluch/signal-store"
+
+export const counter = signalStore(
+  withState({ count: 0 }),
+  withComputed(({ count }) => ({ double: computed(() => count.value * 2) })),
+  withMethods((s) => ({ increment: () => patchState(s, { count: s.count.value + 1 }) })),
+)
+```
+
+In-tree example: [src/stores/counter.ts](src/stores/counter.ts) + [src/pages/showcase/sections/signal-store.tsx](src/pages/showcase/sections/signal-store.tsx) (live demo on `/showcase`). Going further → [skills/@fluch-signal-store/SKILL.md](skills/@fluch-signal-store/SKILL.md) for the core API, plus `references/` for normalized entity collections, scoped React Provider, RxJS side-effects (`rxMethod`), and the Redux DevTools bridge.
+
 ## Authentication
 
 The template ships the **client** for [better-auth](https://better-auth.com) — sign-in / sign-up / session — but **not the server**. The `/auth` page (see [src/pages/auth.tsx](src/pages/auth.tsx)) is a working demo that points at whatever backend you configure via `VITE_AUTH_BASE_URL`.
