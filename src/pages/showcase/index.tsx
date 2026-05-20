@@ -7,6 +7,7 @@ import Form from "./sections/form"
 import Navigation from "./sections/navigation"
 import Overlays from "./sections/overlays"
 import Palette from "./sections/palette"
+import SignalStore from "./sections/signal-store"
 import SpacingRadius from "./sections/spacing-radius"
 import Typography from "./sections/typography"
 
@@ -20,6 +21,8 @@ function Showcase() {
           tous les tokens. Toggle dark/light dans le header global.
         </p>
       </header>
+      <SignalStore />
+      <Separator />
       <Palette />
       <Separator />
       <Typography />
