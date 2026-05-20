@@ -238,20 +238,20 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S14 — README polish + Settings GitHub checklist (bonus, hors SPEC initiale)
+## S14 — README polish + Settings GitHub checklist (bonus, hors SPEC initiale) ✅
 **But** : rendre le repo accueillant au premier coup d'œil et finaliser les métadonnées GitHub.
 
 - [x] Badges en tête du README (après le titre, avant la description) : CI status natif GitHub Actions, License MIT, Node ≥22, pnpm ≥9, "Use this template" (badge cliquable vers le generator). Style shields.io flat. Badge Dependabot skippé (pas d'équivalent officiel).
 - [x] Section **Contributing** dans le README (avant License) : pointe vers `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/`, et `SECURITY.md` pour les vulns.
 - [x] Section **Community** : lien Discussions (404 jusqu'à activation Settings), Code of Conduct, contact maintainer `@clemparpa`.
 - [x] Ordre conventionnel OSS appliqué : badges → description courte → Quickstart → Stack → Scripts → Structure → Signals → CI → Specs/roadmap → Fork → Monorepo → Contributing → Community → License (Quickstart remonté avant Stack ; Contributing + Community insérés avant License).
-- [ ] **Checklist d'actions Settings côté GitHub** (manuelles côté user, traçables en checkboxes) :
-  - [ ] Activer **Template repository** (Settings → General).
-  - [ ] Renseigner *Description* + *Website* (panneau About en tête du repo).
-  - [ ] Ajouter topics : `react`, `vite`, `vite-template`, `tailwind`, `tailwindcss-v4`, `shadcn`, `base-ui`, `signals`, `preact-signals`, `typescript`, `react-router`, `template`.
-  - [ ] Activer **Discussions** (Settings → General → Features).
-  - [ ] Activer **Private Vulnerability Reporting** (Settings → Security & analysis).
-  - [ ] Vérifier la branch protection rule sur `main` : 5 checks CI required (lint / typecheck / test / audit / build), require linear history, require PR before merge, no force push, no deletions. Si CODEOWNERS ajouté en S16 : ajouter "Require review from Code Owners".
+- [x] **Checklist d'actions Settings côté GitHub** (manuelles côté user, traçables en checkboxes) :
+  - [x] Activer **Template repository** (Settings → General).
+  - [x] Renseigner *Description* + *Website* (panneau About en tête du repo). *Website laissé vide volontairement — pas de GitHub Pages déployé, décision actée 2026-05-20.*
+  - [x] Ajouter topics : `react`, `vite`, `vite-template`, `tailwind`, `tailwindcss-v4`, `shadcn`, `base-ui`, `signals`, `preact-signals`, `typescript`, `react-router`, `template`. *Livré avec `shadcn-ui` (au lieu de `shadcn`) + bonus `better-auth` → 13 topics au total.*
+  - [x] Activer **Discussions** (Settings → General → Features).
+  - [x] Activer **Private Vulnerability Reporting** (Settings → Security & analysis).
+  - [x] Vérifier la branch protection rule sur `main` : 5 checks CI required (lint / typecheck / test / audit / build), require linear history, require PR before merge, no force push, no deletions. *Vérifié 2026-05-20 via `gh api repos/.../branches/main/protection` : 5 checks + linear history + 1 review required + no force push + no deletions OK. CODEOWNERS hors scope (S16 optionnelle non livrée).*
 
 **Vérif** :
 - README rendu (CommonMark) : badges affichés en tête, liens Contributing/Security cliquables.
@@ -345,22 +345,36 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S18 — `@fluch/signal-store` (state management) (bonus, hors SPEC initiale)
+## S18 — `@fluch/signal-store` (state management) (bonus, hors SPEC initiale) ✅
 **But** : ajouter `@fluch/signal-store` au template avec un exemple minimal qui démontre la composition `withState` + `withComputed` + `withMethods`. Cohérent avec le choix Signals déjà fait en S04 — le store est une couche de composition au-dessus, qui rend `withState`/`withComputed` réactifs sans Provider ni hook.
 
-- [ ] Installer les dépendances core : `pnpm add @fluch/signal-store @preact/signals-core rxjs`.
+- [x] Installer les dépendances core : `pnpm add @fluch/signal-store @preact/signals-core rxjs`.
   - `@preact/signals-core` est déjà tiré transitivement par `@preact/signals-react` (S04), mais le déclarer en direct est plus propre (visibilité dans `package.json`).
   - `rxjs` est requis par `rxMethod` (cf. `references/core.md`) — installé même si l'exemple v1 du template ne s'en sert pas, pour ne pas obliger l'user à le rajouter dès qu'il touche aux side-effects async.
-- [ ] Créer `src/stores/counter.ts` : exemple minimal `signalStore(withState, withComputed, withMethods)` (compteur avec `count`, dérivés `double` + `isPositive`, méthodes `increment` / `decrement` / `reset`) — repris quasi-mot pour mot de la section "Complete example" du SKILL.md du package (cf. `skills/@fluch-signal-store/SKILL.md`).
-- [ ] Câbler la démo dans la **Showcase** (page existante S06) : nouvelle section "Signal Store" avec 3 boutons (increment / decrement / reset) et l'affichage live des 3 valeurs (`count.value` / `double.value` / `isPositive.value`). Le Babel transform Signals (S04) rend la subscription auto — **pas de hook**, juste lire `.value` dans le JSX.
-- [ ] Section **State management** dans le README, juste après la section Signals : positionne `@preact/signals-react` (réactivité fine, S04) vs `@fluch/signal-store` (composition de state). Pointe vers `skills/@fluch-signal-store/SKILL.md` + `skills/@fluch-signal-store/references/` pour la suite (entities, React Provider scopé, RxJS side-effects, Redux DevTools).
+- [x] Créer `src/stores/counter.ts` : exemple minimal `signalStore(withState, withComputed, withMethods)` (compteur avec `count`, dérivés `double` + `isPositive`, méthodes `increment` / `decrement` / `reset`) — repris quasi-mot pour mot de la section "Complete example" du SKILL.md du package (cf. `skills/@fluch-signal-store/SKILL.md`).
+- [x] Câbler la démo dans la **Showcase** (page existante S06) : nouvelle section "Signal Store" avec 3 boutons (increment / decrement / reset) et l'affichage live des 3 valeurs (`count.value` / `double.value` / `isPositive.value`). Le Babel transform Signals (S04) rend la subscription auto — **pas de hook**, juste lire `.value` dans le JSX.
+- [x] Section **State management** dans le README, juste après la section Signals : positionne `@preact/signals-react` (réactivité fine, S04) vs `@fluch/signal-store` (composition de state). Pointe vers `skills/@fluch-signal-store/SKILL.md` + `skills/@fluch-signal-store/references/` pour la suite (entities, React Provider scopé, RxJS side-effects, Redux DevTools).
 
 **Vérif** :
 - `pnpm dev` : la Showcase affiche la section Signal Store, les 3 valeurs sont live, les 3 boutons mutent l'état sans re-render manuel ni `useState`.
 - `pnpm typecheck` : aucune erreur, l'inférence du store est complète (autocomplete sur `store.count.value`, `store.double.value`, `store.increment()`, etc.).
 - `pnpm build` : OK. Coût indicatif : ~3 kb gzip d'après le SKILL.md.
 
-**Notes** (à compléter une fois implémenté) : TBD.
+**Notes finales** :
+- **Versions installées** : `@fluch/signal-store@1.1.1`, `@preact/signals-core@1.14.2` (en direct, plus seulement transitif via `@preact/signals-react`), `rxjs@7.8.2`. `rxjs` reste tree-shaké à 0 octet bundle tant qu'aucun `rxMethod` n'est importé — la dépendance est posée pour préparer le terrain async sans piéger les forks.
+- **Position dans la Showcase** : section "Signal Store" placée **tout en haut, avant Palette** (décision via AskUserQuestion). Logique : c'est la feature first-class du template à promouvoir, premier truc vu sur `/showcase`. Les sections design tokens suivent.
+- **Position README** : section `## State management` insérée **entre `## Signals` et `## Authentication`** — ordre logique « réactivité fine → composition de state → cas concret auth ».
+- **Pattern signal sans hook** : `counter.count.value`, `counter.double.value`, `counter.isPositive.value` lus directement dans le JSX. Le Babel transform de S04 injecte automatiquement `useSignals(1)` + `try/finally` pour la subscription, donc **aucun hook explicite** côté code utilisateur (pas de `useStore`, `useSelector`, ni `useSignals()`). Vérifié sur le bundle minifié.
+- **`@preact/signals-core` direct** : la lib `@fluch/signal-store` peer-depend sur `@preact/signals-core`. Sans la déclarer en direct dans `package.json`, le `import { computed } from "@preact/signals-core"` de `src/stores/counter.ts` marche par chance (résolu via l'arbo de `@preact/signals-react`). Le déclarer explicite évite l'effet « rugpull » si une future major de signals-react change sa peer-dep.
+- **Test pattern S09 étendu** : 3e test ajouté à `src/test/showcase.test.tsx` (`count: 0` → clic `Increment` → `count: 1`). Le store `counter` étant un **singleton module-level** (comme `themeMode` en S09), un `afterEach(counter.reset)` colocalisé dans le `describe` empêche les leaks entre `it()`. Choix volontaire de ne pas étendre `src/test/setup.ts` : préfère le coupling visible dans le test plutôt qu'un reset caché global — à factoriser si d'autres stores arrivent.
+- **Bundle delta réel** : `dist/assets/index.js` passe de 795.92 KB / 247.45 KB gzip (post-S17) à 811.77 KB / 252.07 KB gzip (post-S18) → **+15.85 KB raw / +4.62 KB gzip**. Cohérent avec l'estimation `~3 kb gzip` du SKILL.md (le reste = `@preact/signals-core` désormais inclus en direct vs. avant intégré par signals-react seulement quand des chemins s'en servent + petits utilitaires de `@fluch/signal-store`).
+- **CHANGELOG / Changesets** : changeset minor `.changeset/add-signal-store.md` créé dans la PR de livraison. Mergé via [#13](https://github.com/clemparpa/fluch-react-signals-starter/pull/13), suivi du bump auto `0.2.0 → 0.3.0` (PR Version Packages [#14](https://github.com/clemparpa/fluch-react-signals-starter/pull/14)). Tag `v0.3.0` + GitHub Release créés manuellement comme rattrapage (cause : `pnpm changeset tag` skip les packages `"private": true`) ; le workflow est corrigé en PR [#15](https://github.com/clemparpa/fluch-react-signals-starter/pull/15) pour qu'au prochain bump le tag + la Release soient créés automatiquement.
+- **Decisions confirmées par l'user (AskUserQuestion)** :
+  1. Position section showcase : **tout en haut, avant Palette**.
+  2. Position section README : **entre Signals et Authentication**.
+  3. Test Vitest minimal : **oui** (count + 1 increment).
+  4. `rxjs` à installer maintenant : **oui** (préparer le terrain `rxMethod`).
+- **Pour aller plus loin** : le skill complet est vendoré sous [skills/@fluch-signal-store/](skills/@fluch-signal-store/) — SKILL.md (core API) + `references/{core,entities,react,devtools}.md` pour respectivement les side-effects async (`rxMethod` + `withHooks`), les collections normalisées (`addEntity` / `updateEntity` / `removeEntity` / multi-collection), le Provider React scopé (`createStoreContext` + `useStore`) et le bridge Redux DevTools.
 
 ---
 
