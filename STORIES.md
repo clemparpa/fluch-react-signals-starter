@@ -297,11 +297,11 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
 
 ---
 
-## S17 — better-auth (client SPA, serveur hors scope) (bonus, hors SPEC initiale)
+## S17 — better-auth (client SPA, serveur hors scope) (bonus, hors SPEC initiale) ✅
 **But** : câbler le **client** `better-auth` (sign-up / sign-in / session) dans le template, en laissant le serveur d'auth à la charge de l'user. Cohérent avec la vocation "starter SPA" — le backend reste un template séparé (ex. le template backend perso du maintainer), branché via une variable d'env.
 
-- [ ] Installer la dépendance : `pnpm add better-auth`.
-- [ ] Créer `src/lib/auth-client.ts` :
+- [x] Installer la dépendance : `pnpm add better-auth` (v1.6.11).
+- [x] Créer `src/lib/auth-client.ts` :
   ```ts
   import { createAuthClient } from "better-auth/react"
   export const authClient = createAuthClient({
@@ -310,23 +310,38 @@ Backlog ordonné pour passer du repo vide à un template publiable. Chaque story
   export const { signIn, signUp, signOut, useSession } = authClient
   ```
   Le re-export nommé limite la surface d'import côté pages.
-- [ ] Ajouter `.env.example` à la racine avec la variable `VITE_AUTH_BASE_URL=http://localhost:8000` + un commentaire au-dessus expliquant que **le template ne livre aucun serveur** — c'est à l'user de pointer ici un backend better-auth (son propre serveur, le template backend perso, ou une autre instance compat).
-- [ ] Page démo `src/pages/auth.tsx` (route `/auth` ajoutée à `src/router.tsx`) :
-  - Deux cartes shadcn (`Card`) côte-à-côte : **Sign in** (email + password) et **Sign up** (name + email + password).
-  - Formulaires avec composants shadcn (`Input`, `Label`, `Button`) + `useSignal()` pour l'état local des champs.
+- [x] Ajouter `.env.example` à la racine avec la variable `VITE_AUTH_BASE_URL=http://localhost:8000` + un commentaire au-dessus expliquant que **le template ne livre aucun serveur** — c'est à l'user de pointer ici un backend better-auth (son propre serveur, le template backend perso, ou une autre instance compat).
+- [x] Page démo `src/pages/auth.tsx` (route `/auth` ajoutée à `src/router.tsx`) :
+  - Deux cartes shadcn (`Card`) côte-à-côte (`grid md:grid-cols-2 gap-6`) : **Sign in** (email + password) et **Sign up** (name + email + password).
+  - Formulaires avec composants shadcn (`Input`, `Label`, `Button`) + `useSignal()` pour l'état local des champs (incluant un signal `loading` qui désactive le bouton pendant l'appel).
   - **Bandeau d'alerte affiché en haut de page, toujours visible** :
     - Si `import.meta.env.VITE_AUTH_BASE_URL` est `undefined` ou vide → `Alert variant="destructive"` : *"No auth backend configured. Set `VITE_AUTH_BASE_URL` in your `.env` to point at a running better-auth server."*
-    - Sinon → `Alert` info : *"Auth backend: `<VITE_AUTH_BASE_URL value>`"* — l'URL est affichée littéralement à l'écran pour rendre le couplage explicite et débuggable d'un coup d'œil.
+    - Sinon → `Alert` info : titre "Auth backend" + l'URL affichée littéralement en `<code>`.
   - Sous les deux cartes : bloc "Current session" qui lit `useSession()` (loading / signed-in user + bouton Sign out / not signed in).
-- [ ] Ajouter un lien `/auth` dans le header du layout `src/layouts/root.tsx` à côté du lien Showcase — accessible depuis n'importe quelle page.
-- [ ] Section **Authentication** dans le README, insérée juste après la section Signals : explique le découplage frontend / backend (le template ne ship que le client), le rôle de `VITE_AUTH_BASE_URL`, et pointe vers la doc officielle [better-auth.com](https://better-auth.com) pour monter un serveur. Mentionner explicitement que tester `/auth` sans backend = bandeau rouge + formulaires en erreur réseau attendue.
+  - **Feedback** via toast `sonner` (réutilise le `<Toaster />` câblé en S06) : `toast.success("Signed in" / "Account created" / "Signed out")` + `toast.error(error.message ?? "<action> failed")`. Pas de message inline.
+- [x] Ajouter un lien `/auth` dans le header du layout `src/layouts/root.tsx` (NavLink cloné du pattern Showcase, placé entre Showcase et le toggle theme).
+- [x] Section **Authentication** dans le README, insérée juste après la section Signals.
+- [x] Bonus (hors story initiale) : `src/vite-env.d.ts` qui type `ImportMetaEnv.VITE_AUTH_BASE_URL?: string` (best practice Vite, autocomplete sur `import.meta.env.*`).
+- [x] Bonus : `src/test/auth.test.tsx` (pattern S09) — 2 tests verts : rendu du bandeau rouge sans `VITE_AUTH_BASE_URL` + présence des boutons "Sign in" / "Sign up".
 
 **Vérif** :
-- `pnpm dev` sans `.env` (ou `VITE_AUTH_BASE_URL` vide) : la page `/auth` rend les formulaires + bandeau rouge — pas de crash, pas d'écran blanc.
-- Avec un backend better-auth lancé sur la baseURL configurée : sign-up → user créé côté serveur, session établie, `useSession()` affiche le user dans le bloc inférieur, bouton Sign out fonctionnel.
-- `pnpm typecheck` + `pnpm build` verts (le client `better-auth` est entièrement typé).
+- `pnpm lint && pnpm typecheck && pnpm test && pnpm audit --audit-level=high && pnpm build` tous verts.
+- `pnpm test` : 4 tests verts (showcase ×2 + auth ×2).
+- `pnpm build` : 795.92 KB JS / 247.45 KB gzip (+32 KB raw / +11 KB gzip vs avant S17, dans la fourchette attendue pour le client better-auth).
+- Vérification dev avec backend lancé : à faire côté user (l'user fournit son backend better-auth).
 
-**Notes** (à compléter une fois implémenté) : TBD.
+**Notes finales** :
+- **Version installée** : `better-auth@1.6.11`. Le client React vit dans `better-auth/react`, exporte `createAuthClient` qui retourne dynamiquement `signIn` / `signUp` / `signOut` / `useSession` + le résolveur d'atoms.
+- **Pattern signal pour inputs contrôlés** : `const email = useSignal("")` + `value={email.value}` + `onChange={(e) => { email.value = e.target.value }}`. Le Babel transform S04 fait que le composant re-render automatiquement à chaque keystroke sans `useState`.
+- **`useSession()` à la racine de SessionBlock** : déclenche un fetch GET vers `<baseURL>/api/auth/get-session` au mount. Sans baseURL, fetch va sur l'origine courante (ex: `http://localhost:5173/api/auth/get-session` en dev) → 404. Le hook gère l'erreur dans `error`, le composant ne crash pas.
+- **Bruit dans `pnpm test`** : `useSession()` essaie aussi de fetcher en environnement happy-dom → `AggregateError: ECONNREFUSED ::1:3000` est loggé par Node net (pas par Vitest). Les tests passent quand même. Solution future si nécessaire : stub fetch dans `src/test/setup.ts` pour intercepter `/api/auth/*` et retourner une fake 401.
+- **`AlertTitle` / `CardTitle` sont des `<div>`** : pas de balise sémantique heading. Le test utilise `getByText("No auth backend configured")` pour l'alerte et `getByRole("button", { name: "Sign in" })` pour les CTA (uniques et accessibles).
+- **`.env.example` whitelisté par `.gitignore`** : la ligne `!.env.example` existait déjà depuis le bootstrap S01, rien à ajouter. Tout autre `.env*` reste ignoré.
+- **Decisions confirmées par l'user (AskUserQuestion)** :
+  1. Test Vitest pour `/auth` : **oui** (pattern S09).
+  2. Feedback UI : **toast sonner uniquement** (pas d'Alert inline pour les erreurs de form — moins de state à gérer).
+  3. Typage env : **créer `src/vite-env.d.ts`** (best practice Vite).
+- **CHANGELOG** : non touché ici. La policy Changesets seed à partir de 0.2.0+ — la PR qui livre S17 doit inclure un `pnpm changeset` avec une note minor (nouvelle capacité = auth client).
 
 ---
 
