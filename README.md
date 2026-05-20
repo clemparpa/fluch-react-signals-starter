@@ -81,6 +81,20 @@ export function Counter() {
 }
 ```
 
+## Authentication
+
+The template ships the **client** for [better-auth](https://better-auth.com) — sign-in / sign-up / session — but **not the server**. The `/auth` page (see [src/pages/auth.tsx](src/pages/auth.tsx)) is a working demo that points at whatever backend you configure via `VITE_AUTH_BASE_URL`.
+
+```sh
+cp .env.example .env
+# then edit .env to point at a running better-auth backend, e.g.:
+# VITE_AUTH_BASE_URL=http://localhost:8000
+```
+
+Without a backend, `/auth` still renders — it just shows a red alert banner ("No auth backend configured") and the network requests fail (expected). See [better-auth.com](https://better-auth.com) for how to stand up a compatible server.
+
+The client lives in [src/lib/auth-client.ts](src/lib/auth-client.ts) and re-exports the hooks (`useSession`) and actions (`signIn`, `signUp`, `signOut`) you'll typically import from your pages.
+
 ## CI
 
 `.github/workflows/ci.yml` runs five parallel jobs on every push to `main` and every pull request:
