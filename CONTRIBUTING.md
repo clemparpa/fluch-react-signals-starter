@@ -64,15 +64,6 @@ Releases are produced by [Changesets](https://github.com/changesets/changesets).
 
 Chore-only PRs (docs, refactors with no observable change, tests, internal tooling) don't need a changeset.
 
-## Adding a story
-
-Setup stories live in two places:
-
-- [SPEC.md](SPEC.md) — the full template specification (high-level: what the template ships with and why).
-- [STORIES.md](STORIES.md) — the executable backlog (one story per topic, with checkboxes, verification steps, and post-mortem notes).
-
-If you're proposing a new "setup story" (extending the bootstrap rather than evolving a shipped feature), add an `SXX` section to `STORIES.md` following the same format as the existing entries — `**But**`, checkboxes, `**Vérif**`, `**Notes**`.
-
 ## Reporting bugs / requesting features
 
 - **Bugs and feature ideas** → open an issue using one of the two structured templates ([.github/ISSUE_TEMPLATE/](.github/ISSUE_TEMPLATE/)). Blank issues are disabled to keep triage scoped.

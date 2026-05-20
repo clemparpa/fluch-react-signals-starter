@@ -126,12 +126,6 @@ The client lives in [src/lib/auth-client.ts](src/lib/auth-client.ts) and re-expo
 
 Concurrency is set so that a new commit on the same ref cancels the previous run.
 
-## Specs & roadmap
-
-- [SPEC.md](SPEC.md) — full template specification
-- [STORIES.md](STORIES.md) — the eleven user stories that produced this repo
-- [designs/active.md](designs/active.md) — placeholder for the active design system (overwritten by the `apply-theme` skill)
-
 ## Fork this template
 
 This repo is published as a **GitHub template** — click *Use this template* (or `gh repo create --template …`) to start a new project from it. After cloning your fork:
